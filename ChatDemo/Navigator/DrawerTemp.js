@@ -12,6 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 
 
 
@@ -26,15 +27,18 @@ import coronaMeterIndiaTemp from '../Component/coronaMeterIndiaTemp';
 import IndiaGraphPage from '../Component/indiaGraphPage';
 import HelpCentre from '../Component/helpCenterDetail'
 import StateInfo from '../Component/stateDetailsPage'
+
+import RecoveryResponses from '../Component/recoveryResponse'
 // import StateInfo from '../Component/stateDetailsPageTemp'
 import IndiaMap from '../Component/mapDemo'
 
 import NewsTab from '../Navigator/tabForNews'
 import NewsPage from '../Component/newsPage';
-
+import SafetyPage from '../Component/safetyFromCorona'
 
 import SafeAreaView from 'react-native-safe-area-view';
 import {NavigationContainer} from '@react-navigation/native';
+
 
 const DrawerItems = [{
     IconTag: AntDesign, icon: 'flag', title: 'Corona Meter(India)', urlToPage:'Corona meter(INDIA)'
@@ -51,13 +55,20 @@ const DrawerItems = [{
     {
         IconTag: Entypo, icon: 'bar-graph', title: 'Chart-Graph',urlToPage:'Graph'
     },
+    {
+        IconTag: Entypo, icon: 'folder-video', title: 'Patient Responses',urlToPage:'RecoveryResponses'
+    },
 
     {
         IconTag: Entypo, icon: 'location', title: 'Map View(India)',urlToPage:'IndiaMap'
     },
     {
+        IconTag: Feather, icon: 'info', title: 'How to be Safe?',urlToPage:'SafetyPage'
+    },
+    {
         IconTag: Fontisto, icon: 'earth', title: 'Globe',urlToPage:'World map'
     },
+
 ];
 
 let temp=0;
@@ -114,6 +125,8 @@ const DrawerNavigation = (props) => {
             <Drawer.Screen name="IndiaMap" component={IndiaMap} />
             <Drawer.Screen name="HelpCentre" component={HelpCentre} />
             <Drawer.Screen name="NewsPage" component={NewsPage} />
+            <Drawer.Screen name="RecoveryResponses" component={RecoveryResponses} />
+            <Drawer.Screen name="SafetyPage" component={SafetyPage} />
 
         </Drawer.Navigator>
         </NavigationContainer>

@@ -9,6 +9,7 @@ import {
     View,
     Text,
     Platform,
+    RefreshControl,
 
     StyleSheet,
     TextInput,
@@ -255,10 +256,10 @@ class rnFethcDemo extends React.Component{
             renderFlag:true,
             todayCases:0,
             stateApiResponse:[],
-            internetFlag:false
+            internetFlag:false,
+            refreshing:false,
         }
     }
-
     fetchCities = async () => {
         try {
             const [
@@ -274,8 +275,6 @@ class rnFethcDemo extends React.Component{
         }
 
     }
-
-
 
     citiesLatLog = (citiesData) => {
         let x;
@@ -359,14 +358,14 @@ class rnFethcDemo extends React.Component{
         }))
     }
 
-
-
     intialixation=()=>{
+
         this.fetchCities()
         this.fetchStates()
         this.getCountryData1().then((res)=>{
             let str=res.data
             let IndiaCase=str.substring(str.indexOf(':')+1,str.indexOf('Cases'))
+            this.setState({CountryCase:IndiaCase})
             let IndiaDeath=str.substring(str.indexOf('and')+4,str.indexOf('Deaths'))
             this.setState({CoutryDeath:IndiaDeath})
         })
@@ -434,20 +433,13 @@ class rnFethcDemo extends React.Component{
             this.setState({cityData:{}})
             this.setState({chartData:{labels:this.state.dayArray,datasets:[{data:this.state.dailyCases}]}})
 
-
-
-
             this.setState({chatFlag:true})
             this.setState({renderFlag:false})
-
             let tempDayActiveCases=[]
             daysOfActiveCase.map((data)=>{
                 tempDayActiveCases.push(data.substring(1,7))
-
             })
             this.setState({dayArray:tempDayActiveCases})
-
-
             if(this.state.dayArray) {
                 this.props.setDays(this.state.dayArray)
                 this.props.setProgress(this.state.dailyCases)
@@ -458,20 +450,11 @@ class rnFethcDemo extends React.Component{
                     maxDailyReovered: Math.max.apply(null, recoverCases),
                     maxDailyProgress: Math.max.apply(null, activeCases)
                 })
-
             }
-
             let tempDailyCases=this.state.dailyCases
             this.setState({chartData:{labels:tempDayActiveCases,datasets:[{data:tempDailyCases}]}})
-
             this.props.setLineChartData(this.state.chartData)
-
-            // console.log(this.state.dailyCases[this.state.dailyCases.length-1])
-            // console.log(this.state.CountryCase)
-
-            this.setState({todayCases:parseInt(this.state.CountryCase)-parseInt(this.state.dailyCases[this.state.dailyCases.length-1])})
-
-
+            this.setState({todayCases:parseInt(this.state.CountryCase.replace(/[^0-9]/g,''))-parseInt(this.state.dailyCases[this.state.dailyCases.length-1])})
 
         })
 
@@ -509,41 +492,52 @@ class rnFethcDemo extends React.Component{
                 }
                 tempFinalStateArray1.push(tempFinalStateArray)
             })
-
-
-
             this.setState({stateDataFinal:tempFinalStateArray1})
             console.log(this.state.dailyCases)
             console.log(this.state.CountryCase)
         })
     }
-    unsubscribe = NetInfo.addEventListener(state => {
-        console.log("Connection type", state.type);
-        console.log("Is connected?", state.isConnected);
-        return state.isConnected
-    });
+
+    checkConnectivity=()=>{
+        if (Platform.OS === "android") {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                if (isConnected) {
+                    return true
+                } else {
+                    return false
+                }
+            });
+        }
+        else
+        {
+            NetInfo.isConnected.addEventListener(
+                "connectionChange",
+                this.handleFirstConnectivityChange
+            );
+        }
+    }
+    handleFirstConnectivityChange = isConnected => {
+        NetInfo.isConnected.removeEventListener(
+            "connectionChange",
+            this.handleFirstConnectivityChange
+        );
+
+        if (isConnected === false) {
+            return false
+        } else {
+            return true
+        }
+    };
     componentDidMount() {
-        // if (Platform.OS === "android") {
-        //
-        //     NetInfo.addEventListener(state => {
-        //         console.log("Connection type", state.type);
-        //         console.log("Is connected?", state.isConnected);
-        //
-        //     if(state.isConnected){
-        //         // this.setState({internetFlag:false})
-        //         this.intialixation()
-        //
-        //     }else{
-        //         // this.setState({internetFlag:true})
-        //         alert("plz connect to internet")
-        //     }
-        //
-        //
-        // }) }else {
-        //     // For iOS devices
-        //     this.intialixation()
-        // }
-        this.intialixation()
+        if(this.checkConnectivity) {
+            this.setState({internetFlag: false})
+            this.intialixation()
+        }
+        else{
+            alert("plz connect to internet")
+            this.setState({internetFlag: true})
+        }
+
        setInterval(()=>{
             this.intialixation()
         },300000)
@@ -588,30 +582,14 @@ class rnFethcDemo extends React.Component{
                 for(j=1;j<response.data.statewise.length-i-1;j++)
                 {
                     if(parseInt(response.data.statewise[j].confirmed)<parseInt(response.data.statewise[j+1].confirmed)){
-                        let temp=response.data.statewise[j].confirmed;
-                        response.data.statewise[j].confirmed=response.data.statewise[j+1].confirmed
-                        response.data.statewise[j+1].confirmed=temp;
-
+                        let temp=response.data.statewise[j];
+                        response.data.statewise[j]=response.data.statewise[j+1]
+                        response.data.statewise[j+1]=temp;
                     }
                 }
 
             }
-            // for(i=0;i<tempCases.length;i++)
-            // {
-            //     for(j=0;j<(tempCases.length-i-1);j++)
-            //     {
-            //         if(parseInt(tempCases[j])<parseInt(tempCases[j+1]))
-            //         {
-            //             let temp=tempCases[j];
-            //             tempCases[j]=tempCases[j+1];
-            //             tempCases[j+1]=temp
-            //             let temp2=tempStateName[j];
-            //             tempStateName[j]=tempStateName[j+1];
-            //             tempStateName[j+1]=temp2
-            //         }
-            //     }
-            //
-            // }
+
 
             this.setState({stateApiResponse:response.data.statewise})
             this.props.setStateData(this.state.stateApiResponse);
@@ -621,9 +599,7 @@ class rnFethcDemo extends React.Component{
             response.data.statewise.map((data)=>{
                 tempTotalDeath=parseInt(data.deaths)+tempTotalDeath
                 tempTotalRecovered=parseInt(data.recovered)+tempTotalRecovered
-                if(data.state==='Total'){
-                    this.setState({CountryCase:data.confirmed})
-                }
+
             })
             console.log(tempTotalDeath)
             // this.setState({CoutryDeath:tempTotalDeath,dailyRecoverCases:tempTotalRecovered})
@@ -672,13 +648,21 @@ class rnFethcDemo extends React.Component{
         })
     }
 
+    refreshDemo=()=>{
+        this.intialixation()
+
+    }
+
     render(){
     return(
         <View style={{alignItems:'center',flex:1}}>
             <SafeAreaView style={{flex:0,backgroundColor:'red'}}/>
             <AppHeader title={'Corona Meter(India)'} onPress={()=>this.props.navigation.openDrawer()}/>
 
-            <ScrollView style={{flex:1}}>
+
+            <ScrollView style={{flex:1}} refreshControl={
+                <RefreshControl refreshing={this.state.refreshing} onRefresh={()=>this.refreshDemo()}/>
+            }>
                 <View style={{height:h*.60,width:w,}}>
                     <View style={{height:h*.15,width:w,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                         <Image source={indianFlag} style={{height:h*0.10,width:w*.25}}/>
@@ -788,12 +772,14 @@ class rnFethcDemo extends React.Component{
 
 
                 { this.state.internetFlag &&
-                <Modal visible={true} animated={false} transparent={true}>
+                <Modal visible={true} animated={false} transparent={false}>
                     <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-
+                        <Text>Opps! Please connect to network connect</Text>
+                        <TouchableOpacity onPress={()=>this.componentDidMount()}><Text>Click Here To Reload Page</Text></TouchableOpacity>
                     </SafeAreaView>
                 </Modal>
                 }
+
 
             </ScrollView>
         </View>

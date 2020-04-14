@@ -28,9 +28,13 @@ import WorldNews from '../Component/worldNews'
 import NewsPage from '../Component/newsPage'
 
 import WoroldNewsTemp2 from '../Component/worldNews2'
+import ResponseRecovery from '../Component/recoveryResponse'
+import IndiaNews2 from '../Component/indiaNews2'
+import IndiaNews3 from '../Component/indiaNews3'
+import safetyPage from '../Component/safetyFromCorona'
 
 const stack = createStackNavigator({
-    DrawerTemp,WoroldNewsTemp2,NewsPage,WorldNews,IndiaNews,HelpCenter,MapDemo,Drawer,Tabs,loginPage,barChartDemo,rnFecthDemo,homePage, ChatPage,RegisterPage,ChatPage1,StatInfo
+    DrawerTemp,safetyPage,IndiaNews3,IndiaNews2,ResponseRecovery,WoroldNewsTemp2,NewsPage,WorldNews,IndiaNews,HelpCenter,MapDemo,Drawer,Tabs,loginPage,barChartDemo,rnFecthDemo,homePage, ChatPage,RegisterPage,ChatPage1,StatInfo
 },{
     headerMode:'none',
     navigationOptions:{

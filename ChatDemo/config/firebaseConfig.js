@@ -1,6 +1,5 @@
 import * as firebase from 'firebase';
 
-
 var config = {
     apiKey:"AIzaSyDms25wQpLvCrhSfmeLuWsHUTMf28zUo9Y",
     authDomain:"cloudfunctiondemo-d2104.firebaseapp.com",

@@ -37,7 +37,8 @@ export default class worldnewslist extends Component {
             opacity:0,
             url:[],
             newsContentArray:[],
-            showDetailNewsFlag:false
+            showDetailNewsFlag:false,
+
         }
     }
     getNews=()=>{
@@ -93,6 +94,7 @@ export default class worldnewslist extends Component {
             this.setState({newsContentArray:[]})
             this.setState({newsContentArray:newsArray})
             this.setState({showDetailNewsFlag:true})
+
 
         })
     }
@@ -159,18 +161,24 @@ export default class worldnewslist extends Component {
                 <SafeAreaView style={{flex:1}}>
                     <View style={{flex:1}}>
                         <ScrollView style={{flex:1}}>
-                        <View style={{height:h*.87,}}>
+                        <View style={{flex:1}}>
                         <ScrollView style={{flex:1}} nestedScrollEnabled={true}>
                     {this.state.newsHeading.map((data,index)=>{
                         return(
+                            <TouchableOpacity onPress={()=>this.showDetailNews(index)}>
                             <View style={{height:h*0.13,width:w, backgroundColor:index%2==1 ?'#ECEDEE':'white',padding:h*.010}}>
-                                <TouchableOpacity onPress={()=>this.showDetailNews(index)}>
-                                <Text numberOfLines={2} ellipsizeMode='tail' style={{fontSize:normalize(13)}}>{data.replace(/[^a-zA-Z ]/g, "")}</Text>
-                                </TouchableOpacity>
+
+                                <Text numberOfLines={2} ellipsizeMode='tail' style={{fontSize:normalize(15)}}>{data.replace(/[^a-zA-Z ]/g, "")}</Text>
+
                             </View>
+                            </TouchableOpacity>
+
                         )
                     })}
                         </ScrollView>
+
+                                <Text style={{textAlign:'right',fontSize:normalize(12),padding:h*0.020}}>Source:-WHO(World health organization)</Text>
+
                         { this.state.showDetailNewsFlag &&
                         <Modal visible={true} animated={true} transparent={false}>
                             <SafeAreaView style={{flex:1}}>
@@ -198,15 +206,11 @@ export default class worldnewslist extends Component {
                         </Modal>
                         }
 
+
                     </View>
-                        <View style={{height:h*.13,padding:h*0.010}}>
-                            <Text style={{textAlign:'right',fontSize:normalize(12)}}>Source:-WHO(World health organization)</Text>
-                        </View>
+
                         </ScrollView>
-
                     </View>
-
-
                 </SafeAreaView>
             );
    }

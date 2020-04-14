@@ -22,6 +22,8 @@ import coronaMeterIndia from '../Component/coronaMeterIndia';
 import IndiaNews from '../Component/indiaNews'
 import WorldNews from '../Component/worldNews'
 import WorldNewsTemp from '../Component/worldNews2'
+import IndiaNewsTemp from '../Component/indiaNews3'
+
 import AppHeader from '../Component/appHeader';
 
 const Tab = createMaterialTopTabNavigator();
@@ -30,7 +32,7 @@ function App() {
     return (
 
             <Tab.Navigator>
-                <Tab.Screen name="India News" component={IndiaNews} />
+                <Tab.Screen name="India News" component={IndiaNewsTemp} />
                 <Tab.Screen name="Global News" component={WorldNewsTemp} />
             </Tab.Navigator>
 

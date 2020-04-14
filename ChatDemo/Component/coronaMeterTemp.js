@@ -14,6 +14,7 @@ import {
     ImageBackground,
     ActivityIndicator,
     Dimensions,
+    RefreshControl,
     DatePickerIOS, Image, InputAccessoryView,
     TouchableHighlight, PixelRatio,
 
@@ -61,6 +62,8 @@ export default class  rnFethcDemo extends React.Component{
             mildCase:'',
             mildCasePer:'',
             todayCases:'',
+            refreshing:false,
+
 
 
         }
@@ -122,29 +125,28 @@ export default class  rnFethcDemo extends React.Component{
 
     }
 
-
-    componentDidMount() {
+    initilization=()=>{
         this.getDemo().then((res)=>{
-           let str=res.data;
+            let str=res.data;
 
-           let temp='\n' +
-               '        series: [{\n' +
-               '            name: \'Cases\',\n' +
-               '            color: \'#33CCFF\',\n' +
-               '            lineWidth: 5,\n' +
-               '            data: [580,845'
+            let temp='\n' +
+                '        series: [{\n' +
+                '            name: \'Cases\',\n' +
+                '            color: \'#33CCFF\',\n' +
+                '            lineWidth: 5,\n' +
+                '            data: [580,845'
 
 
             let CasesArray=str.substring(str.indexOf(temp),str.length);
 
             CasesArray=CasesArray.substring(CasesArray.indexOf('580'),CasesArray.indexOf('}]')-9)
             CasesArray=CasesArray.split(",");
-             let daySArray=str.substring(str.indexOf("categories")+13,str.indexOf("yAxis")-5)
-             daySArray=daySArray.split(",")
-             let tempArray=[];
-             daySArray.map((data)=>{
-                 tempArray.push(data.substring(data.indexOf('"')+1,data.lastIndexOf('"')))
-             })
+            let daySArray=str.substring(str.indexOf("categories")+13,str.indexOf("yAxis")-5)
+            daySArray=daySArray.split(",")
+            let tempArray=[];
+            daySArray.map((data)=>{
+                tempArray.push(data.substring(data.indexOf('"')+1,data.lastIndexOf('"')))
+            })
             this.setState({dateArray:tempArray,dateWiesCasesArray:CasesArray})
 
             let tempRecoverCases=str.substring(str.indexOf('Recovered/Discharged'),str.indexOf('Recovered/Discharged')+100)
@@ -160,19 +162,12 @@ export default class  rnFethcDemo extends React.Component{
 
             let seriousCasesPer=seriousCases.substring(seriousCases.substring(0,seriousCases.length-1).length,seriousCases.length)
             seriousCases=seriousCases.substring(0,seriousCases.length-1)
-
-             this.setState({seriousCases:seriousCases,seriousCasesPer:seriousCasesPer})
-
+            this.setState({seriousCases:seriousCases,seriousCasesPer:seriousCasesPer})
             let tempMildCases=str.substring(str.indexOf('Mild Condition'),str.indexOf('Mild Condition')+100)
             tempMildCases=tempMildCases.replace(/[^0-9]/g,'')
-
             let tempMildPer=tempMildCases.substring(tempMildCases.substring(0,tempMildCases.length-2).length,tempMildCases.length)
-
             tempMildCases=tempMildCases.substring(0,tempMildCases.length-2)
-
-
             this.setState({mildCase:tempMildCases,mildCasePer:tempMildPer})
-
 
         });
 
@@ -193,8 +188,6 @@ export default class  rnFethcDemo extends React.Component{
         let tempTodayCases=0;
         tempTodayCases=parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1])
         this.setState({todayCases:tempTodayCases})
-        console.log("---data")
-        console.log(parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1]))
         setInterval(()=>{
             this.getCountryData().then((res)=>{
                 let str=res.data
@@ -215,6 +208,11 @@ export default class  rnFethcDemo extends React.Component{
         },300000)
 
     }
+
+    componentDidMount() {
+        this.initilization()
+
+    }
     render(){
 
 
@@ -222,7 +220,10 @@ export default class  rnFethcDemo extends React.Component{
 
         <View style={{flex:1,}}>
             <AppHeader title={'Corona Meter(World)'} onPress={()=>this.props.navigation.openDrawer()}/>
-            <ScrollView style={{flex:1,padding:10}}>
+            <ScrollView style={{flex:1,padding:10}}
+                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>this.initilization()}/>}
+
+            >
                 <View style={{height:h*.40,}}>
                     <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',height:h*0.20,}}>
 
