@@ -131,6 +131,13 @@ export default class worldnewslist extends Component {
    }
 
     render() {
+        const {
+            newsHeadinListView,
+            sourceTitle
+
+
+        } = style;
+
             return (
                 <SafeAreaView style={{flex:1}}>
                     <View style={{flex:1}}>
@@ -140,14 +147,14 @@ export default class worldnewslist extends Component {
                             if(data[0].substring(0,5)!=''){
                             return(
                                 <TouchableOpacity onPress={()=>this.showDetailNews(data,index)}>
-                                <View style={{height:h*.13,marginTop:h*0.010,padding:h*0.015,backgroundColor:index%2==1 ?'#ECEDEE':'white',}}>
+                                <View style={[newsHeadinListView,{backgroundColor:index%2==1 ?'#ECEDEE':'white',}]}>
                                     <Text numberOfLines={2} ellipsizeMode='tail' style={{fontSize:normalize(15)}}>{data[0].replace(/[^a-zA-Z0-9 ]/g, "")}</Text>
                                 </View>
                                 </TouchableOpacity>
                             )}
                         })
                     }
-                        <Text style={{textAlign:'right',fontSize:normalize(12),padding:h*0.020}}>Source:-TOI(Times of India)</Text>
+                        <Text style={sourceTitle}>Source:-TOI(Times of India)</Text>
                             { this.state.showDetailNewsFlag &&
                             <Modal visible={true} animated={true} transparent={false}>
                                 <SafeAreaView style={{flex:1}}>
@@ -163,8 +170,8 @@ export default class worldnewslist extends Component {
                                             {this.state.tempIndex.map((data,index)=>{
                                                 if(index<6){
     return(
-        <View>
-            <Text style={{fontSize:normalize(15)}}>{data.replace(/[^a-zA-Z0-9 ]/g, "")}</Text>
+        <View style={{marginTop:h*.0005}}>
+            <Text style={{fontSize:normalize(15),textAlign:'left'}}>{data.replace(/[^a-zA-Z0-9 ]/g, "").trim()}</Text>
         </View>
     )}
 })}
@@ -191,60 +198,11 @@ export default class worldnewslist extends Component {
 }
 }
 
-const styles = StyleSheet.create({
-container: {
-flex: 1,
-paddingTop: 30,
-backgroundColor: '#F5FCFF',
+const style = StyleSheet.create({
+newsHeadinListView:{
+    height:h*.13,marginTop:h*0.010,padding:h*0.015,
 },
-topHeading: {
-paddingLeft: 10,
-fontSize: 20,
-},
-header: {
-backgroundColor: '#F5FCFF',
-padding: 16,
-},
-safestyle: {
-flex: 1,
-},
-viewstyle: {
-flex: 1,
-},
-titleView: {
-flex: 0.05,
-justifyContent: 'center',
-alignItems: 'center',
-},
-textview: {
-fontSize: 30,
-},
-loadingView: {
-marginTop: 50,
-},
-listView: {
-flex: 0.95,
-backgroundColor: 'lightgray',
-},
-headerText: {
-fontSize: 16,
-fontWeight: '500',
-},
-separator: {
-height: 0.5,
-backgroundColor: '#808080',
-width: '95%',
-marginLeft: 16,
-marginRight: 16,
-},
-text: {
-fontSize: 16,
-// color: '#606070',
-padding: 10,
-},
-content: {
-paddingLeft: 10,
-paddingRight: 10,
-backgroundColor: '#fff',
-},
+    sourceTitle:{
+        textAlign:'right',fontSize:normalize(12),padding:h*0.020
+    }
 });

@@ -12,12 +12,6 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
 	<string/>
-	<key>CFBundleIconFile</key>
-	<string/>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string/>
-	</array>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -54,7 +48,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<string/>
 	<key>LSRequiresIPhoneOS</key>
@@ -73,11 +67,13 @@
 		</dict>
 	</dict>
 	<key>NSContactsUsageDescription</key>
-	<string/>
+	<string> ${PRODUCT_NAME} use contacts</string>
 	<key>NSHumanReadableCopyright</key>
 	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) uses location to show current location</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>&gt;$(PRODUCT_NAME) uses photo library </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

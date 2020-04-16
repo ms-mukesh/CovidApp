@@ -37,11 +37,11 @@ const Protect = (props) => {
                                         Between people who are in close contact with one another (within about 6 feet).{'\n'}
                                         Through respiratory droplets produced when an infected person coughs, sneezes or talks.{'\n'}
                                         These droplets can land in the mouths or noses of people who are nearby or possibly be inhaled into the lungs.{'\n'}
-                                        Some recent studies have suggested that COVID-19 may be spread by people who are not showing symptoms.{'\n'}
+                                        Some recent studies have suggested that COVID-19 may be spread by people who are not showing symptoms.
                                     </Text>
                                 </View>}
                                 <TouchableOpacity onPress={() => { setSpread(!spread) }}>
-                                    <Text style={{ textDecorationLine: 'underline', color: 'blue',marginTop:hs*0.005 }}>{spread ? 'Read less' : 'Read more'}</Text>
+                                    <Text style={{ textDecorationLine: 'underline', color: 'blue' }}>{spread ? 'Read less' : 'Read more'}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

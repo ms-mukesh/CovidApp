@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ibL-r2-CWC">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="YT3-vW-YPt">
+            <objects>
+                <viewController id="ibL-r2-CWC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cwn-jQ-oCe">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Okg-DG-fvH">
+                                <rect key="frame" x="67.5" y="269.5" width="240" height="128"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Covid Meter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CR1-JJ-93f">
+                                        <rect key="frame" x="38" y="31.5" width="164" height="35"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="29"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="2xH-rg-ZvK"/>
+                                    <constraint firstItem="CR1-JJ-93f" firstAttribute="centerY" secondItem="Okg-DG-fvH" secondAttribute="centerY" constant="-15" id="IM4-Tf-kkt"/>
+                                    <constraint firstItem="CR1-JJ-93f" firstAttribute="centerX" secondItem="Okg-DG-fvH" secondAttribute="centerX" id="hxg-LD-AZ4"/>
+                                    <constraint firstAttribute="width" constant="240" id="u3X-fY-sYO"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From Lanet Team" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S79-oE-EHg">
+                                <rect key="frame" x="117.5" y="337.5" width="140" height="22"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="S79-oE-EHg" firstAttribute="centerX" secondItem="cwn-jQ-oCe" secondAttribute="centerX" id="CQ2-UT-Yhj"/>
+                            <constraint firstItem="Okg-DG-fvH" firstAttribute="centerY" secondItem="cwn-jQ-oCe" secondAttribute="centerY" id="P8U-bB-mhp"/>
+                            <constraint firstItem="S79-oE-EHg" firstAttribute="centerY" secondItem="cwn-jQ-oCe" secondAttribute="centerY" constant="15" id="jtm-bQ-r6O"/>
+                            <constraint firstItem="Okg-DG-fvH" firstAttribute="centerX" secondItem="cwn-jQ-oCe" secondAttribute="centerX" id="vRt-Q6-kTA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ioq-ff-QZE"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jLN-ew-9SI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="746" y="136"/>
+        </scene>
+    </scenes>
+</document>

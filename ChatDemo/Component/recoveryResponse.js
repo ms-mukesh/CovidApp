@@ -9,7 +9,7 @@ import {
     FlatList,
     TouchableWithoutFeedback,
     Modal,
-    TouchableOpacity, ActivityIndicator, ScrollView,
+    TouchableOpacity, ActivityIndicator, ScrollView, Platform,
 } from 'react-native';
 import YouTube from 'react-native-youtube';
 
@@ -17,7 +17,7 @@ import axios from 'axios';
 import { withNavigationFocus } from 'react-navigation'
 import AppHeader from '../Component/appHeader';
 const {width, height} = Dimensions.get('window');
-
+let tempForScreen=0;
 export class MediaPlayer extends Component {
     constructor(props) {
         super(props);
@@ -44,6 +44,11 @@ export class MediaPlayer extends Component {
             console.log(this.state.patienceData)
         })
     }
+    moveTOHome=()=>{
+        console.log("called")
+            this.setState({isModalOpen:false})
+            tempForScreen=0;
+    }
 
     modal() {
         const {innerModalHeadingView, cancelButton, modalView} = styles;
@@ -63,14 +68,15 @@ export class MediaPlayer extends Component {
                         apiKey={'AIzaSyACC6bLl_ZOutsLShSbh8jVPje_e74Lqsc'}
                         videoId={this.link.toString()} // The YouTube video ID*/}
                         play // control playback of video with true/false
-                        fullscreen // control whether the video should play in fullscreen or inline
-                        // onReady={e => this.setState({isReady: true})}
-                        // onChangeState={e => this.setState({status: e.state})}
-                        // onChangeQuality={e => this.setState({quality: e.quality})}
+                        fullscreen= {Platform.OS === 'android'} // control whether the video should play in fullscreen or inline
+                        onReady={e => this.setState({isReady: true})}
+                        onChangeState={e => this.setState({status: e.state})}
+                        onChangeQuality={e => this.setState({quality: e.quality})}
                         onError={e => console.log(e)}
                         style={{alignSelf: 'stretch', height: 300}}
                         resumePlayAndroid={false}
                         controls={1}
+                        onChangeFullscreen={Platform.OS==='android'?()=>tempForScreen==0?tempForScreen=tempForScreen+1:this.moveTOHome():console.log('called')}
                     />
                 </View>
             </Modal>
@@ -127,7 +133,7 @@ export class MediaPlayer extends Component {
                 <AppHeader title={'Patients Expereince'} onPress={()=>this.props.navigation.openDrawer()}/>
                 <View style={mainView}>
                     <View style={headingView}>
-                        <Text style={headingText}>Experience of Recover patient </Text>
+                        <Text style={headingText}>Experience of Recovered Patients</Text>
                     </View>
                     <View style={flatListView}>
                         <FlatList

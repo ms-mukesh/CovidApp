@@ -13,10 +13,8 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
-import AppHeader from '../Component/appHeader'
+import AppHeader from '../Component/appHeader';
 import Icon from 'react-native-vector-icons/AntDesign';
-
-
 
 const {width, height} = Dimensions.get('window');
 const scale = width / 375;
@@ -57,17 +55,24 @@ export default class HealthCare extends Component {
         return (
             <TouchableWithoutFeedback
                 onPress={() => {
+                    console.log(items.index);
                     if (isState) {
-                        this.setState({selectedState: items.item});
                         this.setState({isStateModelOpen: false});
                         this.setState({selectedCity: ''});
+                        if (items.index == 0) {
+                            this.setState({selectedState: ''});
+                        } else {
+                            this.setState({selectedState: items.item});
+                        }
                     } else {
                         this.setState({selectedCity: items.item});
                         this.setState({isCityModelOpen: false});
                     }
                 }}>
                 <View style={listView}>
-                    <Text style={headingText}>{items.item}</Text>
+                    <Text style={headingText}>
+                        {items.item.replace(/[^a-zA-Z ]/g, '')}
+                    </Text>
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -81,6 +86,9 @@ export default class HealthCare extends Component {
             innerModalView,
             modalFlatListStyle,
         } = styles;
+        if (this.states[0] != 'ALL') {
+            this.states.unshift('ALL');
+        }
         return (
             <Modal
                 visible={this.state.isStateModelOpen}
@@ -93,7 +101,12 @@ export default class HealthCare extends Component {
                             <Text style={cancelButton}>Cancel</Text>
                         </TouchableOpacity>
                         <Text
-                            style={{alignSelf: 'center', fontSize: normalize(16), fontWeight: 'bold',marginTop:-(height*.020)}}>
+                            style={{
+                                alignSelf: 'center',
+                                fontSize: normalize(16),
+                                fontWeight: 'bold',
+                                marginTop: -(height * 0.02),
+                            }}>
                             Please Select State
                         </Text>
                     </View>
@@ -120,6 +133,10 @@ export default class HealthCare extends Component {
         } = styles;
         if (this.state.selectedState !== '') {
             const cityObj = this.cities.find(o => o.key === this.state.selectedState);
+            cityObj.data.sort();
+            if (cityObj.data[0] != 'ALL' && cityObj.data.length > 1) {
+                cityObj.data.unshift('ALL');
+            }
             return (
                 <Modal
                     visible={this.state.isCityModelOpen}
@@ -132,14 +149,19 @@ export default class HealthCare extends Component {
                                 <Text style={cancelButton}>Cancel</Text>
                             </TouchableOpacity>
                             <Text
-                                style={{alignSelf: 'center', fontSize: normalize(16), fontWeight: '700',marginTop:-(height*.020)}}>
+                                style={{
+                                    alignSelf: 'center',
+                                    fontSize: normalize(16),
+                                    fontWeight: '700',
+                                    marginTop: -(height * 0.02),
+                                }}>
                                 Please Select City
                             </Text>
                         </View>
                         <View style={innerModalView}>
                             <FlatList
                                 style={modalFlatListStyle}
-                                data={cityObj.data.sort()}
+                                data={cityObj.data}
                                 keyExtractor={item => item}
                                 renderItem={items => this.stateListView(items, false)}
                             />
@@ -178,7 +200,6 @@ export default class HealthCare extends Component {
             })
             .catch(error => alert(error));
     }
-
     listForState() {
         const {
             viewForAdmission,
@@ -200,6 +221,61 @@ export default class HealthCare extends Component {
                 }) === index,
         );
         tempData.sort((a, b) => a.name > b.name);
+        return (
+            <View>
+                <View style={headerFlatListView}>
+                    <View style={viewForName}>
+                        <Text style={headerFlatListText}>Name of Health Center</Text>
+                    </View>
+                    <View style={viewForAdmission}>
+                        <Text style={headerFlatListText}>Admission Capacity</Text>
+                    </View>
+                    <View style={viewForAdmission}>
+                        <Text style={headerFlatListText}>Hospital Beds</Text>
+                    </View>
+                </View>
+                <FlatList
+                    style={mainFlatListStyle}
+                    data={tempData}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={items => (
+                        <View style={viewForStateList}>
+                            <View style={viewForName}>
+                                <Text style={collegeNameText}>{items.item.name}</Text>
+                            </View>
+                            <View style={viewForAdmission}>
+                                <Text style={collegeNameText}>
+                                    {items.item.admissionCapacity}
+                                </Text>
+                            </View>
+                            <View style={viewForAdmission}>
+                                <Text style={hospitalBedText}>{items.item.hospitalBeds} </Text>
+                            </View>
+                        </View>
+                    )}
+                />
+            </View>
+        );
+    }
+    listForAll() {
+        const {
+            viewForAdmission,
+            viewForName,
+            viewForStateList,
+            mainFlatListStyle,
+            headerFlatListText,
+            hospitalBedText,
+            collegeNameText,
+            headerFlatListView,
+        } = styles;
+
+        const tempData = this.medicalData.filter(
+            (elem, index, self) =>
+                self.findIndex(t => {
+                    return t.name === elem.name;
+                }) === index,
+        );
+        tempData.sort((a, b) => a.name.trim() > b.name.trim());
         return (
             <View>
                 <View style={headerFlatListView}>
@@ -317,7 +393,10 @@ export default class HealthCare extends Component {
         }
         return (
             <SafeAreaView style={safeAreaView}>
-                <AppHeader title={'Help Center '} onPress={()=>this.props.navigation.openDrawer()}/>
+                <AppHeader
+                    title={'Help Center '}
+                    onPress={() => this.props.navigation.openDrawer()}
+                />
 
                 <View style={mainView}>
                     <View style={headingView}>
@@ -328,8 +407,8 @@ export default class HealthCare extends Component {
                             }}>
                             <Text style={headingText}>
                                 {this.state.selectedState === ''
-                                    ? 'Select State'
-                                    : this.state.selectedState}
+                                    ? 'Select State/UTs'
+                                    : this.state.selectedState.replace(/[^a-zA-Z ]/g, '')}
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -350,15 +429,16 @@ export default class HealthCare extends Component {
                                 }>
                                 {this.state.selectedCity === ''
                                     ? 'Select City'
-                                    : this.state.selectedCity}
+                                    : this.state.selectedCity.replace(/[^a-zA-Z ]/g, '')}
                             </Text>
                         </TouchableOpacity>
                     </View>
                     {this.stateModal()}
                     {this.cityModal()}
                     <View style={containerView}>
-                        {this.state.selectedState === '' &&
-                        this.state.selectedCity === '' ? (
+                        {this.state.selectedState === '' ||
+                        (this.state.selectedState === 'ALL' &&
+                            this.state.selectedCity === '') ? (
                             <View
                                 style={{
                                     alignItems: 'center',
@@ -366,10 +446,10 @@ export default class HealthCare extends Component {
                                     width,
                                     height: '100%',
                                 }}>
-                                <Icon name={'search1'} size={height*.07}/>
-                                <Text style={{fontWeight:'bold'}}>Select State to get result</Text>
+                                {this.listForAll()}
                             </View>
-                        ) : this.state.selectedCity === '' ? (
+                        ) : this.state.selectedCity === '' ||
+                        this.state.selectedCity === 'ALL' ? (
                             this.listForState()
                         ) : (
                             this.listForCity()
@@ -490,7 +570,7 @@ const styles = StyleSheet.create({
     },
     viewForStateList: {
         width,
-        height: height * 0.07,
+        height: height * 0.1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',

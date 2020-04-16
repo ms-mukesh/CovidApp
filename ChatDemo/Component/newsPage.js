@@ -24,7 +24,6 @@ export default class NewsPage extends React.Component{
             <View style={{flex:1}}>
                 <AppHeader title={'News'} onPress={()=>this.props.navigation.openDrawer()}/>
                 <Tabs/>
-
             </View>
         )
     }

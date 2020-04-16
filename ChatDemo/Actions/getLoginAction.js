@@ -73,7 +73,23 @@ export const setDailyCases=(data)=>{
         })
     }
 }
+export const setDailyDeath=(data)=>{
+    return dispatch=>{
+        dispatch({
+            type: 'setDailyDeath',
+            payload:data
+        })
+    }
+}
 
+export const setBackTemp=(data)=>{
+    return dispatch=>{
+        dispatch({
+            type: 'setBackIndex',
+            payload:data
+        })
+    }
+}
 export const setLineChartData=(data)=>{
     return dispatch=>{
         dispatch({

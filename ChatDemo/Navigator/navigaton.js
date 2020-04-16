@@ -16,6 +16,7 @@ import Drawer from '../Navigator/DrawerNavigation'
 import Tabs from '../Navigator/tabForHOmePage'
 
 import DrawerTemp from '../Navigator/DrawerTemp'
+import DeathDataDemo from '../Component/deathDataDemo'
 
 import MapDemo from '../Component/mapDemo'
 
@@ -32,13 +33,16 @@ import ResponseRecovery from '../Component/recoveryResponse'
 import IndiaNews2 from '../Component/indiaNews2'
 import IndiaNews3 from '../Component/indiaNews3'
 import safetyPage from '../Component/safetyFromCorona'
+import LiveCoverage from '../Component/liveCoverage'
 
 const stack = createStackNavigator({
-    DrawerTemp,safetyPage,IndiaNews3,IndiaNews2,ResponseRecovery,WoroldNewsTemp2,NewsPage,WorldNews,IndiaNews,HelpCenter,MapDemo,Drawer,Tabs,loginPage,barChartDemo,rnFecthDemo,homePage, ChatPage,RegisterPage,ChatPage1,StatInfo
+    DrawerTemp,LiveCoverage,safetyPage,IndiaNews3,IndiaNews2,ResponseRecovery,WoroldNewsTemp2,NewsPage,WorldNews,IndiaNews,HelpCenter,MapDemo,Drawer,Tabs,loginPage,barChartDemo,rnFecthDemo,homePage, ChatPage,RegisterPage,ChatPage1,StatInfo
 },{
     headerMode:'none',
+
     navigationOptions:{
-        headerVisible:false
+        headerVisible:false,
+
     }
 })
 const AppContainer = createAppContainer(stack);

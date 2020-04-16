@@ -16,25 +16,93 @@ const ws = Dimensions.get('window').width;
 const hs = Dimensions.get('window').height;
 import TopHeader from '../Component/headerForBack'
 import {jsTypeToCppType} from 'react-native/ReactCommon/hermes/inspector/tools/msggen/src/Converters';
+import axios from 'axios';
+import {normalize} from '../Helper/themeHelper';
+
+let data1 = [];
+let states1 = [];
+let cities1 = [];
 
 const CityData = (props) => {
     const data = props.route.params.data;
-
+    let stateName=''
+    let tempStateArray=[]
 
 
     // const [data,setData] = useState(props.route.params.data);
     const [arr, setArr] = useState(null);
+    const [deceasedData,setDeceasedData]=useState(null)
     const [stateTemp,setStateTemp]=useState(data.state)
+    const [tempState,setTempState]=useState()
     const [flag,setFlag]=useState(false)
     const[keyRefresh,setKeyRefresh]=useState(1);
     let inputEl1 = useRef(null);
     const refArray = [inputEl1];
     useEffect(() => {
+
         fetchCities()
+        stateName=props.route.params.data.state
+
         const unsubscribe = props.navigation.addListener('focus', () => {
             setFlag(true)
         });
     }, [])
+
+
+    const getDeathDataCityWise=()=>{
+        return new Promise((resolve=>{
+            axios
+                .get('https://api.covid19india.org/deaths_recoveries.json')
+                .then(res => {
+                    data1 = res.data.deaths_recoveries;
+                    states1 = [
+                        ...new Set(
+                            data1.map(
+                                item =>
+                                    item.state !== '' &&
+                                    item.state !== 'Kerala/Puducherry?' &&
+                                    item.state,
+                            ),
+                        ),
+                    ];
+                    states1.sort();
+                    states1.pop();
+
+                    states1.forEach(state => {
+                        let temp = new Set();
+                      data1.forEach(item => {
+                            if (
+                                item.state === state &&
+                                item.district !== '' &&
+                                item.patientstatus === 'Deceased'
+                            ) {
+                                temp.add(item.district);
+                            }
+                        });
+                       cities1.push({key: state, data: Array.from(temp)});
+
+                    });
+                    cities1 = cities1.filter(item => item.data.length > 0 && item);
+                    let finalData = [];
+                    cities1.forEach(state => {
+                        let tempCity = [];
+                        state.data.forEach(city => {
+                            let counter = 0;
+                            data1.forEach(item => {
+                                if (item.district === city && item.patientstatus === 'Deceased') {
+                                    counter++;
+                                }
+                            });
+                            tempCity.push({city, totalDeceased: counter});
+                        });
+                        finalData.push({state: state.key, data: tempCity});
+                    });
+                    return resolve(finalData)
+                })
+                .catch(error => alert(error));
+
+        }))
+    }
 
     const fetchCities = () => {
            fetch('https://api.covid19india.org/state_district_wise.json')
@@ -71,22 +139,52 @@ const CityData = (props) => {
             let temp = {
                 city: y,
                 total: cities[data.state].districtData[y].confirmed,
-                today: cities[data.state].districtData[y].delta.confirmed
+                today: cities[data.state].districtData[y].delta.confirmed,
+                death:0
             }
             tempArr.push(temp);
         }
-        setArr(tempArr);
-      }
+        tempStateArray=[];
+        getDeathDataCityWise().then((res)=>{
+            res.map((data)=>{
+                if(data.state.toUpperCase()==stateName.toUpperCase()){
+                    tempStateArray.push(data)
+                }
+            })
+            if(tempStateArray.length>0){
+                tempStateArray[0].data.map((data,index)=>{
+                    tempArr.map((data1,index1)=>{
+                        if(data.city.toUpperCase()==data1.city.toUpperCase()){
+                            tempArr[index1].death=data.totalDeceased
+                        }
+                    })
+                })
+                setArr(tempArr.sort(_sorting));
+
+            }
+
+        })
+
+
+    }
     const display=(text)=>{
         console.log("called this time")
         setFlag(false)
         setStateTemp(text)
     }
+    const _sorting=(a, b) => {
+        if (a.total < b.total) {
+            return 1;
+        } else if (a.total > b.total) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
     const backPress=()=>{
         setFlag(true)
         props.navigation.goBack(null)
-
     }
     return (
         <>
@@ -111,10 +209,16 @@ const CityData = (props) => {
                     <View  style={{ flex: 1, marginTop: 10 }}>
                         <View  style={{ alignItems: 'center', justifyContent: 'center', }}>
                             <Text style={{ fontSize: ws * 0.06, color: '#343A40',backgroundColor:'#ECEDEE',padding:5,borderRadius:10 }}>Cities of {data.state}</Text></View>
-
                         {flag && fetchCities()}
                         {arr === null ? <ActivityIndicator size="large" color="#00000f" />
                             :
+                            <View>
+                                <View style={{height:hs*0.07,width:ws,alignItems:'center',flexDirection:'row'}}>
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.030}}>City Name</Text>
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.22}}>Death</Text>
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.13}}>Cases</Text>
+
+                                </View>
                             <ScrollView
                                 showsVerticalScrollIndicator={false}
                                 style={{ marginHorizontal: 10,marginTop:10 }}>
@@ -124,22 +228,23 @@ const CityData = (props) => {
                                         return (
                                             <View key={item.city} style={{
                                                 backgroundColor:index%2==1 ?'#ECEDEE':'white',
-                                                // marginVertical: 10,
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 padding: 10,
                                                 flexDirection: 'row',
                                             }}>
                                                 <Text style={{ width: ws * 0.6, fontSize: ws * 0.05 }}>{item.city}</Text>
-                                                <View style={{flexDirection:'row'}}>
-                                                    {item.today>0 && <Text style={{ textAlign:'center',color:'green'  }}>+{item.today}</Text>}
-                                                    <Text style={{ width: ws * 0.1,fontSize: ws * 0.05,color:'red',textAlign:'center' }}>{item.total}</Text>
+                                                <Text style={{ fontSize: ws * 0.05,marginLeft:-(ws*0.12) }}>{item.death}</Text>
+                                                <View style={{flexDirection:'row',width:ws*.22}}>
+                                                    <Text style={{ width: ws * 0.20,fontSize: ws * 0.05,color:'red',textAlign:'center', }}>{item.total}</Text>
+                                                    {item.today>0 && <Text style={{ textAlign:'center',color:'green',marginLeft:-(ws*.06),marginTop:-(ws*.015)  }}>+{item.today}</Text>}
                                                 </View>
                                             </View>
                                         )
                                     })
                                 }
                             </ScrollView>
+                            </View>
                         }
                     </View>
                 </View>

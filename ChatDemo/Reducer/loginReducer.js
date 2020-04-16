@@ -11,11 +11,12 @@ const intialState={
         recoveredCases:[],
         dailyProgres:[],
         stateDataFinal:[],
-
+        dailyDeathData:[],
         lineChartData:{},
         maxDailyProgrees:0,
         maxDailyCases:0,
-        maxDailyRecovered:0
+        maxDailyRecovered:0,
+        backTemp:0
 
 }
 
@@ -39,7 +40,9 @@ const reducer=(state = intialState, action) => {
          case 'setDailyCases':
              state.dailyCases=action.payload
              return state
-
+         case 'setDailyDeath':
+             state.dailyDeathData=action.payload
+             return state
          case 'setStateData':
              state.stateDataFinal=action.payload
              return state
@@ -58,6 +61,10 @@ const reducer=(state = intialState, action) => {
                 state.phoneno=action.payload.phoneno;
             }
             return {username: action.payload.username,status:action.payload.status,phoneno:action.payload.phoneno }
+
+            case 'setBackIndex':
+             state.backTemp=action.payload
+             return state.backTemp
          case 'userDetail':
              state.receiverName=action.payload.username;
              state.recieverPhoneNo=action.payload.phoneno;

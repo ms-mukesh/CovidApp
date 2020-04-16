@@ -94,8 +94,6 @@ export default class worldnewslist extends Component {
             this.setState({newsContentArray:[]})
             this.setState({newsContentArray:newsArray})
             this.setState({showDetailNewsFlag:true})
-
-
         })
     }
     componentDidMount(): void {
@@ -190,10 +188,10 @@ export default class worldnewslist extends Component {
                                 <View style={{flex:9,borderTopWidth:h*.001,padding:10}}>
                                     <ScrollView style={{flex:1}}>
                                     {this.state.newsContentArray.map((data,index)=>{
-                                        if(index<8)
+                                        if(index<7)
                                             return(
-                                                <View style={{marginTop:h*0.003}}>
-                                                    <Text style={{fontSize:normalize(15)}}>{data}</Text>
+                                                <View style={{marginTop:h*0.0001}}>
+                                                    <Text style={{fontSize:normalize(15),textAlign:'left'}}>{data.replace(/[^a-zA-Z ]/g, "").trim()}</Text>
                                                 </View>
                                             )
                                     })}
@@ -217,59 +215,5 @@ export default class worldnewslist extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 30,
-        backgroundColor: '#F5FCFF',
-    },
-    topHeading: {
-        paddingLeft: 10,
-        fontSize: 20,
-    },
-    header: {
-        backgroundColor: '#F5FCFF',
-        padding: 16,
-    },
-    safestyle: {
-        flex: 1,
-    },
-    viewstyle: {
-        flex: 1,
-    },
-    titleView: {
-        flex: 0.05,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    textview: {
-        fontSize: 30,
-    },
-    loadingView: {
-        marginTop: 50,
-    },
-    listView: {
-        flex: 0.95,
-        backgroundColor: 'lightgray',
-    },
-    headerText: {
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    separator: {
-        height: 0.5,
-        backgroundColor: '#808080',
-        width: '95%',
-        marginLeft: 16,
-        marginRight: 16,
-    },
-    text: {
-        fontSize: 16,
-        // color: '#606070',
-        padding: 10,
-    },
-    content: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: '#fff',
-    },
+
 });
