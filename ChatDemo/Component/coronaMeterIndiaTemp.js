@@ -654,21 +654,19 @@ class rnFethcDemo extends React.Component{
                     </View>
                     <View style={headerPartition}>
                         <Text style={coronaVirusCases}>Death</Text>
-                        <Text style={[totalCases,{color:'red'}]}>{this.state.CoutryDeath?this.state.CoutryDeath:'Counting..'}<Text style={{fontSize:normalize(13)}}>( {this.state.dailyDeathArray && this.state.CoutryDeath?'+':''} <Text>{this.state.dailyDeathArray && this.state.CoutryDeath?parseInt(this.state.CoutryDeath)-parseInt(this.state.dailyDeathArray[this.state.dailyDeathArray.length-1]):'..'}</Text> )</Text></Text>
+                        <Text style={[totalCases,{color:'red'}]}>{this.state.CoutryDeath?this.state.CoutryDeath:'Counting..'}<Text style={{fontSize:normalize(13)}}>({this.state.dailyDeathArray && this.state.CoutryDeath?'+':''} <Text>{this.state.dailyDeathArray && this.state.CoutryDeath?parseInt(this.state.CoutryDeath)-parseInt(this.state.dailyDeathArray[this.state.dailyDeathArray.length-1]):'..'}</Text>)</Text></Text>
                     </View>
                     <View style={headerPartition}>
                         <Text style={coronaVirusCases}>Recovered</Text>
-                        <Text style={[totalCases,{color:'green'}]}>{this.state.dailyRecoverCases.length>0?this.state.dailyRecoverCases:'Counting..'}<Text style={{fontSize:normalize(15)}}><Text>( {this.state.todayRecoveredPatient?'+':''} {this.state.todayRecoveredPatient?parseInt(this.state.dailyRecoverCases.replace(/[^0-9]/g,''))-parseInt(this.state.todayRecoveredPatient):'..'}</Text>)</Text></Text>
+                        <Text style={[totalCases,{color:'green'}]}>{this.state.dailyRecoverCases.length>0?this.state.dailyRecoverCases:'Counting..'}<Text style={{fontSize:normalize(15)}}><Text>({this.state.todayRecoveredPatient?'+':''} {this.state.todayRecoveredPatient?parseInt(this.state.dailyRecoverCases.replace(/[^0-9]/g,''))-parseInt(this.state.todayRecoveredPatient):'..'}</Text>)</Text></Text>
                     </View>
                 </View>
                 <View style={liveCoverageView}>
                     <LiveCoverage/>
                 </View>
-
-
                 <View style={stateWiseView}>
                     <View style={{height:h*0.08}}>
-                    <Text style={stateHeaderTitle}>State Wise Data<Text style={{fontSize:normalize(15)}}>  (select state for more detail)</Text></Text>
+                    <Text style={stateHeaderTitle}>State Wise Data<Text style={{fontSize:normalize(15)}}>  (Click on State Name for more detail)</Text></Text>
                     </View>
                     <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={{flex:1}}>
                         {this.state.stateApiResponse.map((data,index)=>{
@@ -679,8 +677,8 @@ class rnFethcDemo extends React.Component{
 
                                     >
                                         <TouchableOpacity style={{flex: 1, flexDirection: 'row'}}
-                                                          onPress={() => this.props.navigation.navigate('StateInfo', {
-                                                             data,
+                                                              onPress={() => this.props.navigation.navigate('StateInfo', {
+                                                              data,
 
                                                           })}>
                                             <Text style={stateName}>{data.state}</Text>

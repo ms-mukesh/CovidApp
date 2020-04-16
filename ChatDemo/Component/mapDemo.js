@@ -13,24 +13,24 @@ import {
 
 let LatLog = {
     Kerala: {
-        latitude: 10.536421,
-        longitude: 76.429138
+        latitude: 8.507687,
+        longitude: 76.953983
     },
     Delhi: {
         latitude: 28.646005,
         longitude: 77.222214
     },
     Telangana: {
-        latitude: 17.978733,
-        longitude: 79.310303
+        latitude: 17.363091,
+        longitude: 78.473166
     },
     Rajasthan: {
-        latitude: 26.706360,
-        longitude: 73.773193
+        latitude: 26.920233,
+        longitude: 75.819655
     },
     Haryana: {
-        latitude: 29.310351,
-        longitude: 76.061096
+        latitude: 29,
+        longitude: 76
     },
     UttarPradesh: {
         latitude: 26.8467,
@@ -40,73 +40,73 @@ let LatLog = {
         latitude: 34.152588,
         longitude: 77.577049
     },
+    TamilNadu: {
+        latitude: 13.0801721,
+        longitude: 80.2838331
+    },
     JammuandKashmir: {
-        latitude: 33.7782,
-        longitude: 76.5762
+        latitude: 33.53155445,
+        longitude: 75.31096353
     },
     Karnataka: {
-        latitude: 15.317277,
-        longitude: 75.713890
+        latitude: 12.9791198,
+        longitude: 77.5912997
     },
     Maharashtra: {
-        latitude: 19.663280,
-        longitude: 75.300293
+        latitude: 18.9387711,
+        longitude: 72.8353355
     },
     Punjab: {
-        latitude: 31.1471,
-        longitude: 75.3412
+        latitude: 30.72984395,
+        longitude: 76.78414567
     },
     AndhraPradesh: {
-        latitude: 15.9129,
-        longitude: 79.7400
+        latitude: 15.9240905,
+        longitude: 80.1863809
     },
     Uttarakhand: {
         latitude: 30.0668,
         longitude: 79.0193
     },
     Odisha: {
-        latitude: 20.9517,
-        longitude: 85.0985
+        latitude: 20.2667774,
+        longitude: 85.8435592
     },
     Puducherry: {
         latitude: 11.9416,
         longitude: 79.8083
     },
     WestBengal: {
-        latitude: 22.9868,
-        longitude: 87.8550
-    },
-    Chandigarh: {
-        latitude: 30.7333,
-        longitude: 76.7794
+        latitude: 22.5677459,
+        longitude: 88.3476023
     },
     Chhattisgarh: {
-        latitude: 21.2787,
-        longitude: 81.8661
+        latitude: 21.1610268,
+        longitude: 81.7864412
     },
     Gujarat: {
-        latitude: 22.2587,
-        longitude: 71.1924
+        latitude: 23.2232877,
+        longitude: 72.6492267
     },
     HimachalPradesh: {
-        latitude: 31.1048,
-        longitude: 77.1734
+        latitude: 31.23957275,
+        longitude: 77.71979337
     },
     MadhyaPradesh: {
-        latitude: 22.9734,
-        longitude: 78.6569
+        latitude: 23.5,
+        longitude: 77.416667
     },
     Bihar: {
-        latitude: 25.0961,
-        longitude: 85.3131
+        latitude: 25.416667,
+        longitude: 85.166667
     },
     Manipur: {
-        latitude: 24.6637,
-        longitude: 93.9063
+        latitude: 24.8006088,
+        longitude: 93.9369998
     },
     Mizoram: {
-        latitude: 23.1645,
-        longitude: 92.9376
+        latitude: 23.7414092,
+        longitude: 92.7209297
     },
     Goa: {
         latitude: 15.2993,
@@ -117,32 +117,28 @@ let LatLog = {
         longitude: 92.6586
     },
     Jharkhand: {
-        latitude: 23.6102,
-        longitude: 85.2799
+        latitude: 23.30063985,
+        longitude: 85.37344271
     },
     Assam: {
-        latitude: 26.2006,
-        longitude: 92.9376
+        latitude: 26.1513079,
+        longitude: 91.7933805
     },
     ArunachalPradesh: {
-        latitude: 28.2180,
-        longitude: 94.7278
+        latitude: 27.0979659,
+        longitude: 93.6237291
     },
     Nagaland: {
-        latitude: 26.1584,
-        longitude: 94.5624
+        latitude: 25.75,
+        longitude: 94.166667
     },
     Sikkim: {
-        latitude: 27.5330,
+        latitude: 27.329046,
         longitude: 88.5122
     },
-    TamilNadu: {
-        latitude: 11.1271,
-        longitude: 78.6569
-    },
     Tripura: {
-        latitude: 23.9408,
-        longitude: 91.9882
+        latitude: 23.8312377,
+        longitude: 91.2823821
     },
     DadraandNagarHaveli: {
         latitude: 20.1809,
@@ -157,8 +153,8 @@ let LatLog = {
         longitude: 72.8397
     },
     Meghalaya: {
-        latitude: 25.4670,
-        longitude: 91.3662
+        latitude: 25.5307653,
+        longitude: 91.849528
     }
 
 }

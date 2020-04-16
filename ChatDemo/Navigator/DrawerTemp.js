@@ -88,19 +88,17 @@ let temp1=0;
 const renderRow = (props, index) => {
     const {drawerRow, rowText} = style;
     const {IconTag,icon, title,urlToPage} = props;
-
     return(
         <>
             <TouchableOpacity key={index} style={drawerRow} onPress={() => {
                 props.navigation.navigate(urlToPage)
                 temp=index
-
             }}>
-                {/*<View style={{ backgroundColor: index===temp?color.gray:color.white, paddingLeft: wp(6), paddingRight: wp(3),*/}
-                {/*    marginVertical: hp(0.3), paddingVertical: hp(0.8), borderBottomRightRadius: wp(5), borderTopRightRadius: wp(5)}}>*/}
-                {/*    */}
-                <View style={{ backgroundColor:color.white, paddingLeft: wp(6), paddingRight: wp(3),
+                <View style={{ backgroundColor: index===temp?color.gray:color.white, paddingLeft: wp(6), paddingRight: wp(3),
                     marginVertical: hp(0.3), paddingVertical: hp(0.8), borderBottomRightRadius: wp(5), borderTopRightRadius: wp(5)}}>
+
+                {/*<View style={{ backgroundColor:color.white, paddingLeft: wp(6), paddingRight: wp(3),*/}
+                {/*    marginVertical: hp(0.3), paddingVertical: hp(0.8), borderBottomRightRadius: wp(5), borderTopRightRadius: wp(5)}}>*/}
 
                 <IconTag name={icon} size={hp(3)} color={color.blue}/>
                 </View>

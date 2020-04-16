@@ -39,17 +39,17 @@ const CityData = (props) => {
     let inputEl1 = useRef(null);
     const refArray = [inputEl1];
     useEffect(() => {
-
+debugger
         fetchCities()
         stateName=props.route.params.data.state
-
         const unsubscribe = props.navigation.addListener('focus', () => {
             setFlag(true)
         });
-    }, [])
+    }, [props.route.params.data])
 
 
     const getDeathDataCityWise=()=>{
+        debugger
         return new Promise((resolve=>{
             axios
                 .get('https://api.covid19india.org/deaths_recoveries.json')
@@ -105,6 +105,7 @@ const CityData = (props) => {
     }
 
     const fetchCities = () => {
+        debugger
            fetch('https://api.covid19india.org/state_district_wise.json')
             .then((response) => response.json())
             .then((json) => {
@@ -135,6 +136,9 @@ const CityData = (props) => {
     const citiesRender = (cities) => {
         let y;
         let tempArr = [];
+        let tempDeathArray=[];
+
+debugger
         for (y in cities[data.state].districtData) {
             let temp = {
                 city: y,
@@ -142,33 +146,47 @@ const CityData = (props) => {
                 today: cities[data.state].districtData[y].delta.confirmed,
                 death:0
             }
+
             tempArr.push(temp);
         }
-        tempStateArray=[];
+        let tempDeatCount=0;
         getDeathDataCityWise().then((res)=>{
-            res.map((data)=>{
-                if(data.state.toUpperCase()==stateName.toUpperCase()){
-                    tempStateArray.push(data)
-                }
-            })
-            if(tempStateArray.length>0){
-                tempStateArray[0].data.map((data,index)=>{
-                    tempArr.map((data1,index1)=>{
-                        if(data.city.toUpperCase()==data1.city.toUpperCase()){
-                            tempArr[index1].death=data.totalDeceased
-                        }
-                    })
-                })
-                setArr(tempArr.sort(_sorting));
+            res.map((data1)=>{
 
+                if(data1.state.toUpperCase()==data.state.toUpperCase())
+                {
+                    tempDeathArray.push(data1)
+                    tempDeathArray[0].data.map((d1,in1)=>{
+                        tempArr.map((dataaa1,indexxx1)=>{
+                            if(dataaa1.city==d1.city)
+                            {
+                                tempArr[indexxx1].death=d1.totalDeceased
+
+                            }
+                        })
+                    })
+                }
+
+                tempArr.map((data)=>{
+                    tempDeatCount=tempDeatCount+data.death
+                })
+
+
+            })
+            if(tempDeatCount==0){
+                tempArr.map((data,index)=>{
+                    tempArr[index].death='N/A'
+                })
             }
+            setArr(tempArr.sort(_sorting));
 
         })
 
 
+
     }
     const display=(text)=>{
-        console.log("called this time")
+
         setFlag(false)
         setStateTemp(text)
     }
@@ -209,15 +227,14 @@ const CityData = (props) => {
                     <View  style={{ flex: 1, marginTop: 10 }}>
                         <View  style={{ alignItems: 'center', justifyContent: 'center', }}>
                             <Text style={{ fontSize: ws * 0.06, color: '#343A40',backgroundColor:'#ECEDEE',padding:5,borderRadius:10 }}>Cities of {data.state}</Text></View>
-                        {flag && fetchCities()}
+                        {/*{flag && fetchCities()}*/}
                         {arr === null ? <ActivityIndicator size="large" color="#00000f" />
                             :
                             <View>
                                 <View style={{height:hs*0.07,width:ws,alignItems:'center',flexDirection:'row'}}>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.030}}>City Name</Text>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.22}}>Death</Text>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.13}}>Cases</Text>
-
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',width: ws * 0.6,}}>     City Name</Text>
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',}}>Death</Text>
+                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.03}}>Cases</Text>
                                 </View>
                             <ScrollView
                                 showsVerticalScrollIndicator={false}
@@ -233,11 +250,11 @@ const CityData = (props) => {
                                                 padding: 10,
                                                 flexDirection: 'row',
                                             }}>
-                                                <Text style={{ width: ws * 0.6, fontSize: ws * 0.05 }}>{item.city}</Text>
-                                                <Text style={{ fontSize: ws * 0.05,marginLeft:-(ws*0.12) }}>{item.death}</Text>
+                                                <Text  style={{ width: ws * 0.7, fontSize: ws * 0.05}}>{item.city}</Text>
+                                                <Text style={{ fontSize: ws * 0.05,color:'red',marginLeft:-(ws*0.12),fontWeight:'bold' }}>{item.death}</Text>
                                                 <View style={{flexDirection:'row',width:ws*.22}}>
-                                                    <Text style={{ width: ws * 0.20,fontSize: ws * 0.05,color:'red',textAlign:'center', }}>{item.total}</Text>
-                                                    {item.today>0 && <Text style={{ textAlign:'center',color:'green',marginLeft:-(ws*.06),marginTop:-(ws*.015)  }}>+{item.today}</Text>}
+                                                    <Text style={{ width: ws * 0.20,fontSize: ws * 0.05,fontWeight:'bold',color:'#b8462d',textAlign:'center', }}>{item.total}</Text>
+                                                    {item.today>0 && <Text style={{ textAlign:'center',fontWeight:'bold',color:'green',marginLeft:-(ws*.06),marginTop:-(ws*.015)  }}>+{item.today}</Text>}
                                                 </View>
                                             </View>
                                         )
