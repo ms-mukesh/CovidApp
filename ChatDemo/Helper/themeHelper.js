@@ -12,7 +12,7 @@ let screenHeight = Dimensions.get('window').height;
 const widthPercentageToDP = wp => {
   const widthPercent = wp;
   const elemWidth =
-      typeof widthPercent === 'number' ? widthPercent : parseFloat(widthPercent);
+    typeof widthPercent === 'number' ? widthPercent : parseFloat(widthPercent);
 
   return PixelRatio.roundToNearestPixel((screenWidth * elemWidth) / 100);
 };
@@ -20,9 +20,9 @@ const widthPercentageToDP = wp => {
 const heightPercentageToDP = hp => {
   const heightPercent = hp;
   const elemHeight =
-      typeof heightPercent === 'number'
-          ? heightPercent
-          : parseFloat(heightPercent);
+    typeof heightPercent === 'number'
+      ? heightPercent
+      : parseFloat(heightPercent);
 
   return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
 };
@@ -46,12 +46,12 @@ const color = {
   blue: '#002f7f',
   red: '#D12A2F',
   yellow: '#EAD836',
-  purple: '#46477D',
   green: '#228C44',
   lightBlue: '#5578C4',
   lightGray: '#DCDCDC',
   gray: '#B6C2DA',
   darkGray: '#BFBFC0',
+  purple: '#3D0078',
 };
 
 const headerColorArray = ['orange', 'orange', 'orange', 'orange', 'orange'];
@@ -67,5 +67,5 @@ export {
   isiPAD,
   color,
   font,
-  headerColorArray
+  headerColorArray,
 };
