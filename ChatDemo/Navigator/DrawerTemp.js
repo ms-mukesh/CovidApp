@@ -51,7 +51,7 @@ import RecoveryResponses from '../Component/recoveryResponse';
 import IndiaMap from '../Component/mapDemo';
 
 import NewsTab from '../Navigator/tabForNews';
-import NewsPage from '../Component/newsPage';
+import NewsPage from '../Component/newsPageDemo';
 import SafetyPage from '../Component/safetyFromCorona';
 
 import SafeAreaView from 'react-native-safe-area-view';
@@ -145,7 +145,7 @@ const renderRow = (props, index) => {
             alignItems: 'center',
             flexDirection: 'row',
             width: w * 0.6,
-            backgroundColor: index === temp ? color.gray : color.white,
+            backgroundColor: index === temp ? '#ececec' : color.white,
             paddingLeft: wp(6),
             paddingRight: wp(3),
             marginVertical: hp(0.3),
@@ -167,32 +167,32 @@ const DrawerContent = props => {
   const {headerText, drawerRow, rowText} = style;
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ImageBackground
-        source={require('../Images/assets/side_menu_bg.png')}
-        style={{width: w * 0.65, height: h}}>
+
         <View
           style={{
             height: h * 0.3,
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: color.purple,
+
+
           }}>
           <Image
             source={require('../Images/assets/side_menu_logo.png')}
-            style={{height: h * 0.15, width: w * 0.6}}
+            style={{height: h * 0.25, width: w * 0.65}}
           />
         </View>
+        <ImageBackground source={require('../Images/assets/screen_bg.png')} style={{flex:1}}>
         <View style={{flex: h * 0.8, paddingVertical: hp(5)}}>
+          <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} style={{flex:1}}>
           {DrawerItems.map((item, index) =>
             renderRow({...props, ...item}, index),
           )}
+          </ScrollView>
         </View>
-      </ImageBackground>
-      {/*<View>*/}
-      {/*    <Image style={{height:h*.35,width:w*.65,*/}
-      {/*        backgroundColor: color.lightGray,*/}
-      {/*    }} source={require('../Images/headerLogo.jpeg')}/>*/}
-      {/*</View>*/}
+        </ImageBackground>
     </SafeAreaView>
+
   );
 };
 const DrawerNavigation = props => {
@@ -223,7 +223,7 @@ const DrawerNavigation = props => {
   }
   return (
     <View style={{flex: 1}}>
-      <StatusBar backgroundColor="#254a7f" barStyle="light-content" />
+      <StatusBar backgroundColor='#3D0078' barStyle="light-content" />
       <NavigationContainer>
         <Drawer.Navigator
           drawerContent={props => <DrawerContent {...props} />}
@@ -262,7 +262,7 @@ const style = StyleSheet.create({
     color: color.white,
   },
   drawerRow: {
-    backgroundColor: color.white,
+    // backgroundColor: color.white,
     flexDirection: 'row',
     marginTop: hp(0.5),
     ...center,

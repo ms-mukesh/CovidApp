@@ -11,13 +11,20 @@ import {
     ActivityIndicator,
     ScrollView,
     TouchableOpacity,
+    ImageBackground, Image
 } from 'react-native';
 const ws = Dimensions.get('window').width;
 const hs = Dimensions.get('window').height;
 import TopHeader from '../Component/headerForBack'
 import {jsTypeToCppType} from 'react-native/ReactCommon/hermes/inspector/tools/msggen/src/Converters';
 import axios from 'axios';
-import {normalize} from '../Helper/themeHelper';
+import {color, normalize, screenHeight} from '../Helper/themeHelper';
+
+import icon1 from '../Images/assets/covid_1.png'
+import icon2 from '../Images/assets/covid_2.png'
+import icon3 from '../Images/assets/covid_3.png'
+import icon4 from '../Images/assets/covid_4.png'
+
 
 let data1 = [];
 let states1 = [];
@@ -105,7 +112,7 @@ debugger
     }
 
     const fetchCities = () => {
-        debugger
+
            fetch('https://api.covid19india.org/state_district_wise.json')
             .then((response) => response.json())
             .then((json) => {
@@ -115,20 +122,19 @@ debugger
                 console.error(error);
             });
     }
-    const summery = (title, total, today, textColor, numColor, backColor) => {
+    const summery = (title, total, today, textColor, numColor, backColor,imgPath) => {
         return (
             <View style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: backColor,
-                padding: ws * 0.03
-                , borderRadius: 20,
+                padding: ws * 0.03,
                 marginTop: hs * 0.03,
                 width: ws * 0.35
             }}>
-                <Text style={{ color: textColor, fontWeight: 'bold' }}>{title}</Text>
-                {today > 0 && <Text style={{ color: textColor }}>+{today}</Text>}
-                <Text style={{ color: numColor, fontSize: ws * 0.1, fontWeight: '700' }}>{total}</Text>
+                <Image source={imgPath} style={{height:screenHeight*.06,width:screenHeight*.06}} />
+                <Text style={{fontSize:normalize(11),marginTop:screenHeight*0.025,fontWeight:'bold',color:numColor,textAlign:'center'}}> {title}</Text>
+                <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:numColor}}>{total}</Text>
             </View>
         )
     }
@@ -138,7 +144,7 @@ debugger
         let tempArr = [];
         let tempDeathArray=[];
 
-debugger
+
         for (y in cities[data.state].districtData) {
             let temp = {
                 city: y,
@@ -208,63 +214,86 @@ debugger
         <>
             <StatusBar  barStyle="dark-content" />
             <SafeAreaView  style={{ flex: 1 }}>
+
                 <TopHeader title={'State Details'} onPress={()=>backPress()}/>
-                <View  style={{ flex: 1,backgroundColor:'white' }}>
+                <ScrollView style={{flex:1}}>
+                <ImageBackground source={require('../Images/assets/screen_bg.png')} style={{flex:1}}>
+
+                <View  style={{ flex: 1, }}>
                     <View  style={style.headerView}>
-                        <TouchableOpacity>
-                        <Text ref={ref => (inputEl1 = ref)}   style={style.headerText}>{data.state}
-                        </Text>
-                        </TouchableOpacity>
+                        <Text style={style.headerText}>{data.state.toUpperCase()}</Text>
+                    </View>
+                    <View style={{height:hs*0.002,width:ws,backgroundColor:'red'}}/>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        {summery('CONFIRMED', data.confirmed, data.confirm, '#FF6A89', 'red', '#FFE0E6',icon1)}
+                        {summery('ACTIVE', data.active, 0, '#75B7FF', '#007BFF', '#F0F7FF',icon2)}
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                        {summery('CONFIRMED', data.confirmed, data.confirm, '#FF6A89', 'red', '#FFE0E6')}
-                        {summery('ACTIVE', data.active, 0, '#75B7FF', '#007BFF', '#F0F7FF')}
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                        {summery('RECOVERED', data.recovered, data.trecovered, '#85CD95', '#28A745', '#E4F4E7')}
-                        {summery('DECEASED', data.deaths, data.tdeaths, '#A7ACB1', '#6C757D', '#F6F6F7')}
+                        {summery('RECOVERED', data.recovered, data.trecovered, '#85CD95', '#28A745', '#E4F4E7',icon3)}
+                        {summery('DECEASED', data.deaths, data.tdeaths, '#A7ACB1', '#6C757D', '#F6F6F7',icon4)}
                     </View>
                     <View  style={{ flex: 1, marginTop: 10 }}>
-                        <View  style={{ alignItems: 'center', justifyContent: 'center', }}>
-                            <Text style={{ fontSize: ws * 0.06, color: '#343A40',backgroundColor:'#ECEDEE',padding:5,borderRadius:10 }}>Cities of {data.state}</Text></View>
-                        {/*{flag && fetchCities()}*/}
-                        {arr === null ? <ActivityIndicator size="large" color="#00000f" />
-                            :
-                            <View>
-                                <View style={{height:hs*0.07,width:ws,alignItems:'center',flexDirection:'row'}}>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',width: ws * 0.6,}}>     City Name</Text>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',}}>Death</Text>
-                                    <Text style={{fontSize:normalize(20),fontWeight:'bold',marginLeft:ws*0.03}}>Cases</Text>
-                                </View>
-                            <ScrollView
-                                showsVerticalScrollIndicator={false}
-                                style={{ marginHorizontal: 10,marginTop:10 }}>
+                        <View  style={{ alignItems: 'center', justifyContent: 'center',backgroundColor:'red' }}>
+                            <Text style={{ fontSize: ws * 0.04, color: 'white',padding:5,borderRadius:10,fontWeight: 'bold' }}>CITIES OF {data.state.toUpperCase()}</Text></View>
 
-                                {
-                                    arr && arr.map((item,index) => {
-                                        return (
-                                            <View key={item.city} style={{
-                                                backgroundColor:index%2==1 ?'#ECEDEE':'white',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                padding: 10,
-                                                flexDirection: 'row',
-                                            }}>
-                                                <Text  style={{ width: ws * 0.7, fontSize: ws * 0.05}}>{item.city}</Text>
-                                                <Text style={{ fontSize: ws * 0.05,color:'red',marginLeft:-(ws*0.12),fontWeight:'bold' }}>{item.death}</Text>
-                                                <View style={{flexDirection:'row',width:ws*.22}}>
-                                                    <Text style={{ width: ws * 0.20,fontSize: ws * 0.05,fontWeight:'bold',color:'#b8462d',textAlign:'center', }}>{item.total}</Text>
-                                                    {item.today>0 && <Text style={{ textAlign:'center',fontWeight:'bold',color:'green',marginLeft:-(ws*.06),marginTop:-(ws*.015)  }}>+{item.today}</Text>}
-                                                </View>
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </ScrollView>
+                        <View style={{height: hs*.50,width:ws-50,alignSelf:'center',marginTop: hs*.040}}>
+                            <View style={{height: hs*.05,backgroundColor:'red',flexDirection:'row',}}>
+                                <Text style={{flex:3,backgroundColor:color.purple,fontSize:normalize(18),fontWeight:'bold',color:'white',padding:hs*0.010}}>Location</Text>
+                                <Text style={{flex:1,fontSize:normalize(18),fontWeight:'bold',backgroundColor:'red',color:'white',padding:hs*0.010}}>Death</Text>
+                                <Text style={{flex:1,fontSize:normalize(18),fontWeight:'bold',backgroundColor:'red',color:'white',padding:hs*0.010}}>Cases</Text>
                             </View>
-                        }
+                            <View style={{height:hs*.45,}}>
+                                {arr === null ? <ActivityIndicator size="large" color="#00000f"/> :
+                                    <ScrollView nestedScrollEnabled={true} style={{flex: 1}}>
+                                        {
+                                            arr && arr.map((item, index) => {
+                                                return (
+                                                    <View key={item.city} style={{
+                                                        backgroundColor: index % 2 == 1 ? '#ECEDEE' : 'white',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        padding: 10,
+                                                        flexDirection: 'row',
+                                                    }}>
+                                                        <Text style={{flex: 3, fontSize: ws * 0.05}}>{item.city}</Text>
+                                                        <Text style={{
+                                                            fontSize: ws * 0.05,
+                                                            color: 'red',
+                                                            flex: 1,
+                                                            fontWeight: 'bold'
+                                                        }}>{item.death}</Text>
+                                                        <View style={{flexDirection: 'row', width: ws * .22, flex: 1}}>
+                                                            <Text style={{
+                                                                width: ws * 0.20,
+                                                                fontSize: ws * 0.05,
+                                                                fontWeight: 'bold',
+                                                                color: '#b8462d',
+                                                                textAlign: 'center',
+                                                            }}>{item.total}</Text>
+                                                            {item.today > 0 && <Text style={{
+                                                                textAlign: 'center',
+                                                                fontWeight: 'bold',
+                                                                color: 'green',
+                                                                marginLeft: -(ws * .06),
+                                                                marginTop: -(ws * .015)
+                                                            }}>+{item.today}</Text>}
+                                                        </View>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+
+
+                                    </ScrollView>
+                                }
+                            </View>
+                        </View>
+                        {/*{flag && fetchCities()}*/}
+
                     </View>
                 </View>
+                </ImageBackground>
+                </ScrollView>
 
             </SafeAreaView>
         </>
@@ -274,12 +303,13 @@ debugger
 const style = StyleSheet.create({
 
     headerView: {
-        marginTop: hs * 0.03, alignItems: 'center', justifyContent: 'center'
+        marginTop: hs * 0.03, alignItems: 'center', justifyContent: 'center',height:hs*0.10
     },
     headerText: {
         textAlign: 'center',
-        fontSize: ws * 0.08,
+        fontSize: ws * 0.06,
         fontWeight: 'bold',
+        color:color.purple
         // color: '#9dd7e3'
     }
 })

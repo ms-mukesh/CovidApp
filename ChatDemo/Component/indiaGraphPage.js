@@ -6,6 +6,7 @@ import {
   ScrollView,
   Dimensions,
   PixelRatio,
+    ImageBackground
 } from 'react-native';
 let h = Dimensions.get('window').height;
 let w = Dimensions.get('window').width;
@@ -146,7 +147,9 @@ class IndiaGraphPage extends React.Component {
           <ScrollView
             style={{height: h * 0.45, width: w - 30}}
             horizontal={false}
-            nestedScrollEnabled={true}>
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             {dataArray
               .slice(0)
               .reverse()
@@ -387,6 +390,7 @@ class IndiaGraphPage extends React.Component {
           onPress={() => this.props.navigation.openDrawer()}
         />
         <ScrollView style={{flex: 1}}>
+            <ImageBackground source={require('../Images/assets/screen_bg.png')} style={{flex:1}}>
           {this.verticalChart1(
             this.props.data.dailyProgres,
             this.props.data.dayArray,
@@ -420,6 +424,7 @@ class IndiaGraphPage extends React.Component {
             'Graph For Deaths',
             maxDeath,
           )}
+            </ImageBackground>
         </ScrollView>
       </View>
     );

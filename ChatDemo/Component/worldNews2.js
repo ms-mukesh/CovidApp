@@ -18,6 +18,7 @@ import index from 'rn-fetch-blob';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
+import {color} from '../Helper/themeHelper'
 
 const scale = w / 375;
 
@@ -153,22 +154,62 @@ export default class worldnewslist extends Component {
         })
    }
 
-
     render() {
             return (
                 <SafeAreaView style={{flex:1}}>
                     <View style={{flex:1}}>
+                        <View style={{height: h*.30,width:w,marginTop: h*.020,alignSelf:'center',}}>
+                            <ScrollView showsHorizontalScrollIndicator={false} ref={(node)=>this.scroll=node} scrollEventThrottle={16} nestedScrollEnabled={true}  pagingEnabled={true} horizontal={true}>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImag1.jpeg')}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null,}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoInag2.png')}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg3.jpeg')}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg4.png')}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.40,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg5.jpeg')}/>
+                                </View>
+                            </ScrollView>
+
+                        </View>
+                        <View style={{justifyContent:'center',flexDirection:'row',marginTop: h*.015}}>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:0})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*2})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*3})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*4})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                        </View>
+
+
+
                         <ScrollView style={{flex:1}}>
-                        <View style={{flex:1}}>
-                        <ScrollView style={{flex:1}} nestedScrollEnabled={true}>
+                        <View style={{flex:1,padding:h*0.01}}>
+                            <Text style={{fontSize:normalize(20),color:color.purple,fontWeight:'bold',marginTop:h*0.01}}>News Headlines</Text>
+                        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}} nestedScrollEnabled={true}>
+
+
                     {this.state.newsHeading.map((data,index)=>{
                         return(
                             <TouchableOpacity onPress={()=>this.showDetailNews(index)}>
-                            <View style={{height:h*0.13,width:w, backgroundColor:index%2==1 ?'#ECEDEE':'white',padding:h*.010}}>
+                                <View style={{height:h*0.15,width:w-40,alignSelf:'center',marginTop:h*0.01,backgroundColor:'lightgray',borderRadius:5}}>
+                                    <View style={{flexDirection:'row',height:h*.05,marginTop:5,marginLeft:5}}>
+                                            <Image source={require('../Images/whoLogo.png')} style={{height:h*.05,width:h*.05,borderRadius:h*.025}}/>
+                                            <Text style={{fontSize:normalize(13),fontWeight:'bold',marginTop:h*0.01,marginLeft:10}}>Coronavirus</Text>
+                                    </View>
 
-                                <Text numberOfLines={2} ellipsizeMode='tail' style={{fontSize:normalize(15)}}>{data.replace(/[^a-zA-Z ]/g, "")}</Text>
+                                    <View style={{height:h*.04,width:w-80,marginLeft:30,paddingHorizontal:10}}>
+                                        <Text numberOfLines={2} ellipsizeMode={'tail'} style={{fontSize:normalize(12),textAlign:'left'}}>{data.replace(/[^a-zA-Z ]/g, "").trim()}</Text>
+                                    </View>
+                                    <Text style={{alignSelf:'flex-end',color:'blue',marginTop:8,marginRight:5,fontSize:normalize(10)}}>Read More</Text>
 
-                            </View>
+                                </View>
+
                             </TouchableOpacity>
 
                         )

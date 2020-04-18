@@ -7,7 +7,8 @@ import {
     ScrollView,
     Dimensions,
     RefreshControl,
-    PixelRatio,
+    PixelRatio, Image,
+    ImageBackground
 } from 'react-native';
 let h=Dimensions.get('window').height;
 let w=Dimensions.get('window').width;
@@ -16,6 +17,7 @@ import AppHeader from './appHeader';
 import NetInfo from "@react-native-community/netinfo";
 
 const scale = w / 375;
+import {screenWidth,screenHeight,color} from '../Helper/themeHelper'
 
 const normalize = size => {
     const newSize = size * scale;
@@ -182,63 +184,142 @@ export default class  rnFethcDemo extends React.Component{
             <ScrollView style={{flex:1,padding:10}}
                         refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>this.initilization()}/>}
             >
-                <View style={{height:h*.40,}}>
-                    <View style={headerFirstRow}>
-                        <View style={[smallColumn,{backgroundColor:'#FFE0E6',}]}>
-                            <Text style={{fontSize:normalize(12),fontWeight:'bold',alignSelf:'center',color:'red'}}>Today {parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1])?parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1]):'...'}</Text>
-                            <Text style={[valueForColumn,{color:'red'}]}>{this.state.WorldCase?this.state.WorldCase:'Counting..'}</Text>
-                            <Text style={titleForColumn}>Confirmed</Text>
-                        </View>
+                <ImageBackground
+                    source={require('../Images/assets/screen_bg.png')}
+                    style={{width: null, height: null,flex:1}}>
 
-                        <View style={[smallColumn,{backgroundColor:'#E4F4E7'}]}>
-                            <Text style={[upperLabel,{color:'green'}]}>{this.state.recoverCasesPer?this.state.recoverCasesPer:'Counting..'}%</Text>
-                            <Text style={[valueForColumn,{color:'green'}]}>{this.state.recoverCases?this.state.recoverCases:'Counting'}</Text>
-                            <Text style={titleForColumn}>Recovered</Text>
-                        </View>
-                        <View style={[smallColumn,{backgroundColor:'#faffc1'}]}>
-                            <Text style={[upperLabel,{color:'red'}]}>{this.state.seriousCasesPer?this.state.seriousCasesPer+'%':'Counting..'}</Text>
-                            <Text style={[valueForColumn,{color:'orange'}]}>{this.state.seriousCases?this.state.seriousCases:'Counting..'}</Text>
-                            <Text style={titleForColumn}>Serious Cases</Text>
-                        </View>
 
+                <View style={{height:screenHeight*.40,width:w-35,alignSelf:'center',}}>
+                    <View style={{height:screenHeight*.20,flexDirection:'row',padding:screenHeight*0.010}}>
+                        <View style={{flex:1,backgroundColor:'#b2c8f4'}}>
+                            <View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.04,width:screenHeight*.04}} />
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+
+                                <Text style={[valueForColumn,{color:'gray'}]}>{this.state.mildCase?this.state.mildCase:'Counting..'}</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                <Text style={titleForColumn}>MILD CASES</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
+                                <Text style={[upperLabel,{color:'white'}]}>{this.state.mildCasePer?this.state.mildCasePer+'%':'Counting..'}</Text>
+                            </View>
+                        </View>
+                        <View style={{flex:1,backgroundColor:'#f5e9dd',marginLeft: screenHeight*.010}}>
+                            <View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.04,width:screenHeight*.04}} />
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+
+                                <Text style={[valueForColumn,{color:'gray'}]}>{this.state.recoverCases?this.state.recoverCases:'Counting'}</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                <Text style={titleForColumn}>RECOVERED</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
+                                <Text style={[upperLabel,{color:'white'}]}>{this.state.recoverCasesPer?this.state.recoverCasesPer:'Counting..'}%</Text>
+                            </View>
+                        </View>
+                        <View style={{flex:1,backgroundColor:'#f1bdb8',marginLeft: screenHeight*.010}}>
+                            <View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.04,width:screenHeight*.04}} />
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+
+                                <Text style={[valueForColumn,{color:'gray'}]}>{this.state.seriousCases?this.state.seriousCases:'Counting..'}</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                <Text style={titleForColumn}>SERIOUS CASES</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
+                                <Text style={[upperLabel,{color:'white'}]}>{this.state.seriousCasesPer?this.state.seriousCasesPer+'%':'Counting..'}</Text>
+                            </View>
+                        </View>
                     </View>
-                    <View style={headerSecondRow}>
-                        <View style={[bigColumn,{backgroundColor:'#d1ffb1'}]}>
-                            <Text style={[upperLabel,{color:'#4bf462'}]}>{this.state.mildCasePer?this.state.mildCasePer+'%':'Counting..'}</Text>
-                            <Text style={[valueForColumn,{color:'#16f485'}]}>{this.state.mildCase?this.state.mildCase:'Counting..'}</Text>
-                            <Text style={titleForColumn}>Mild Cases</Text>
+                    <View style={{height:screenHeight*.20,padding:screenHeight*0.010,flexDirection:'row'}}>
+                        <View style={{flex:1,backgroundColor:'#f6c778'}}>
+
+                            <View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.04,width:screenHeight*.04}} />
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+
+                                <Text style={[valueForColumn,{color:'gray'}]}>{this.state.WorldCase?this.state.WorldCase:'Counting..'}</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                <Text style={titleForColumn}>CONFIRMED</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
+                                <Text style={[upperLabel,{color:'white'}]}>Today +{parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1])?parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))-parseInt(this.state.dateWiesCasesArray[this.state.dateWiesCasesArray.length-1]):'Conting..'}</Text>
+                            </View>
+
                         </View>
-                        <View style={[bigColumn,{backgroundColor:'#ffd5ac'}]}>
-                            <Text style={[upperLabel,{color:'red'}]}>{(parseInt(this.state.WorldDeath.replace(/[^0-9]/g,''))*100/parseInt(this.state.WorldCase.replace(/[^0-9]/g,'')))?(parseInt(this.state.WorldDeath.replace(/[^0-9]/g,''))*100/parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))).toString().substring(0,4)+"%":'Counting...'}</Text>
-                            <Text style={[valueForColumn,{color:'red'}]}>{this.state.WorldDeath?this.state.WorldDeath:'Counting..'}</Text>
-                            <Text style={titleForColumn}>Death</Text>
+                        <View style={{flex:1,backgroundColor:'#b6c8c4',marginLeft:screenHeight*.010 }}>
+                            <View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.04,width:screenHeight*.04}} />
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+
+                                <Text style={[valueForColumn,{color:'gray'}]}>{this.state.WorldDeath?this.state.WorldDeath:'Counting..'}</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                <Text style={titleForColumn}>DEATH</Text>
+
+                            </View>
+                            <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
+                                <Text style={[upperLabel,{color:'white'}]}>{(parseInt(this.state.WorldDeath.replace(/[^0-9]/g,''))*100/parseInt(this.state.WorldCase.replace(/[^0-9]/g,'')))?(parseInt(this.state.WorldDeath.replace(/[^0-9]/g,''))*100/parseInt(this.state.WorldCase.replace(/[^0-9]/g,''))).toString().substring(0,4)+"%":'Counting...'}</Text>
+                            </View>
                         </View>
+                    </View>
+
+                </View>
+
+                <View style={{height:screenHeight*0.04,marginTop:screenHeight*0.03,width:screenWidth,marginLeft:-10,backgroundColor:'red',justifyContent:'center',alignItems:'center'}}>
+                    <Text style={{color:'white',fontWeight:'bold',fontSize:normalize(15)}}>Date Wise Cases</Text>
+                </View>
+                <View style={{height:screenHeight*0.40,marginTop:screenHeight*0.05,width:screenWidth-30,alignSelf:'center',}}>
+                    <View style={{height:screenHeight*0.05,backgroundColor:color.purple,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'white',fontWeight:'bold',fontSize:normalize(15)}}>Daily Cases</Text>
+                    </View>
+
+                    <View style={{height:screenHeight*0.35}}>
+                        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={{flex:1}}>
+                            {
+                                this.state.dateWiesCasesArray.slice(0).reverse().map((data,index)=>{
+                                    return(
+                                        <View style={{height:screenHeight*0.05,backgroundColor:index%2==1 ?'white':'#dedfe0',flexDirection:'row'}}>
+                                            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                                                <Text style={listDay}>{this.state.dateArray[this.state.dateWiesCasesArray.length-1-index]}</Text>
+                                            </View>
+                                            <View style={{flex:3,alignItems:'center',justifyContent:'center'}}>
+                                                <Text style={listCase}>{data} Cases</Text>
+                                            </View>
+                                            <View style={{flex:1,padding:screenHeight*0.010}}>
+                                                {index>0 &&
+                                                <Icon style={{alignSelf:'flex-end'}} name={'arrowup'} size={20} color={'red'}/>
+                                                }
+                                            </View>
+                                        </View>
+                                    )
+                                })
+
+                            }
+                        </ScrollView>
+
                     </View>
                 </View>
-                <View style={secondRow}>
-                    <Text style={{fontSize:normalize(20),fontWeight:'bold'}}>Date Wise Cases(World)</Text>
-                            <ScrollView style={{flex:1}}>
-                               {
-                                    this.state.dateWiesCasesArray.slice(0).reverse().map((data,index)=>{
-                                        return(
-                                            <View style={[listViews,{ backgroundColor:index%2==1 ?'#dedfe0':'white'}]}>
-                                                <View style={{flex:4,justifyContent:'center'}}>
-                                                    <Text style={listDay}>{this.state.dateArray[this.state.dateWiesCasesArray.length-1-index]}</Text>
-                                                    <Text style={listCase}>{data} Cases</Text>
-                                                </View>
-                                                <View style={{flex:1}}>
-                                                    {index>0 &&
-                                                    <Icon style={{alignSelf:'flex-end'}} name={'arrowup'} size={20} color={'red'}/>
-                                                    }
+                </ImageBackground>
 
-                                                </View>
-                                            </View>
-                                        )
-                                    })
-
-                                }
-                            </ScrollView>
-                        </View>
             </ScrollView>
         </View>
     )
@@ -256,7 +337,7 @@ const style=StyleSheet.create({
         flex:1,height:h*.15,backgroundColor:'#d1ffb1',padding:h*.010,borderRadius:h*.010,marginLeft:h*.010,justifyContent:'center'
     },
     titleForColumn:{
-        fontSize:normalize(15),fontWeight:'bold',alignSelf:'center',
+        fontSize:normalize(10),fontWeight:'bold',alignSelf:'center',color:'gray'
 
     },
     valueForColumn:{
@@ -273,10 +354,10 @@ const style=StyleSheet.create({
         height:h*.10,width:w-50,marginTop:h*.01,borderRadius:10,padding:h*.01,flexDirection:'row'
     },
     listDay:{
-        fontSize:normalize(15),fontWeight:'bold',
+        fontSize:normalize(13),fontWeight:'bold',
     },
     listCase:{
-        fontSize:normalize(17),fontWeight:'bold',color:'red',
+        fontSize:normalize(15),fontWeight:'bold',color:'black',
     },
     headerSecondRow:{
         flex:1,flexDirection:'row',height:h*0.20

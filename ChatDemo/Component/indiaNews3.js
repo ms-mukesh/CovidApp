@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { SliderBox } from "react-native-image-slider-box";
+import ImageSlider from 'react-native-image-slider';
 import {
     LayoutAnimation,
     StyleSheet,
@@ -11,10 +13,11 @@ import {
     SafeAreaView,
     ActivityIndicator,
     Dimensions,
-    Image, PixelRatio, Modal,
+    Image, PixelRatio, Modal, FlatList,
 } from 'react-native';
 import axios from 'axios';
 import index from 'rn-fetch-blob';
+import {color} from "../Helper/themeHelper";
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 const scale = w / 375;
@@ -137,19 +140,67 @@ export default class worldnewslist extends Component {
 
 
         } = style;
+        const Images= [
+            this.state.newsImageArray[0],
+            "https://source.unsplash.com/1024x768/?water",
+            "https://source.unsplash.com/1024x768/?girl",
+            "https://source.unsplash.com/1024x768/?tree", // Network image
+
+        ]
 
             return (
                 <SafeAreaView style={{flex:1}}>
                     <View style={{flex:1}}>
-                    <ScrollView style={{flex:1}}>
+
+                        <View style={{height: h*.30,width:w,marginTop: h*.020,alignSelf:'center',}}>
+                            <ScrollView  showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} ref={(node)=>this.scroll=node} scrollEventThrottle={16}   pagingEnabled={true} horizontal={true}>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={{uri:this.state.newsImageArray[0]}}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null,}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={{uri:this.state.newsImageArray[1]}}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={{uri:this.state.newsImageArray[2]}}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={{uri:this.state.newsImageArray[3]}}/>
+                                </View>
+                                <View style={{flex:1,width:w,height:null}}>
+                                    <Image style={{width:w-40,height:h*.40,alignSelf:'center',borderRadius:h*.010}} source={{uri:this.state.newsImageArray[4]}}/>
+                                </View>
+                            </ScrollView>
+
+                        </View>
+
+                        <View style={{justifyContent:'center',flexDirection:'row',marginTop: h*.015}}>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:0})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*2})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*3})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*4})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                        </View>
+
+                    <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
+                        <Text style={{fontSize:normalize(20),color:color.purple,fontWeight:'bold',marginTop:h*0.01,marginLeft:w*0.02}}>News Headlines</Text>
                     {
+                        // data[0].replace(/[^a-zA-Z0-9 ]/g, "")
                         this.state.newsContentArray.map((data,index)=>{
                             if(data[0].substring(0,5)!=''){
                             return(
                                 <TouchableOpacity onPress={()=>this.showDetailNews(data,index)}>
-                                <View style={[newsHeadinListView,{backgroundColor:index%2==1 ?'#ECEDEE':'white',}]}>
-                                    <Text numberOfLines={2} ellipsizeMode='tail' style={{fontSize:normalize(15)}}>{data[0].replace(/[^a-zA-Z0-9 ]/g, "")}</Text>
-                                </View>
+                                    <View style={{height:h*0.15,width:w-40,alignSelf:'center',marginTop:h*0.01,backgroundColor:'lightgray',borderRadius:5}}>
+                                        <View style={{flexDirection:'row',height:h*.05,marginTop:5,marginLeft:5}}>
+                                            <Image source={require('../Images/timesOfIndiaLogo.png')} style={{height:h*.05,width:h*.05,borderRadius:h*.025}}/>
+                                            <Text style={{fontSize:normalize(13),fontWeight:'bold',marginTop:h*0.01,marginLeft:10}}>Coronavirus</Text>
+                                        </View>
+
+                                        <View style={{height:h*.04,width:w-80,marginLeft:30,paddingHorizontal:10}}>
+                                            <Text numberOfLines={2} ellipsizeMode={'tail'} style={{fontSize:normalize(12),textAlign:'left'}}>{data[0].replace(/[^a-zA-Z0-9 ]/g, "").trim()}</Text>
+                                        </View>
+                                        <Text style={{alignSelf:'flex-end',color:'blue',marginTop:8,marginRight:5,fontSize:normalize(10)}}>Read More</Text>
+
+                                    </View>
                                 </TouchableOpacity>
                             )}
                         })

@@ -50,6 +50,8 @@ target 'FirstReactDemo2' do
 
   pod 'RCTYouTube', :path => '../node_modules/react-native-youtube'
 
+  pod 'RNStaticSafeAreaInsets', :path => '../node_modules/react-native-static-safe-area-insets'
+
   target 'FirstReactDemo2Tests' do
     inherit! :search_paths
     # Pods for testing

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.gaspardbruno.staticsafeareainsets.RNStaticSafeAreaInsetsPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;

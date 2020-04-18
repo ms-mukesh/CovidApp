@@ -9,7 +9,7 @@ import {
     FlatList,
     TouchableWithoutFeedback,
     Modal,
-    TouchableOpacity, ActivityIndicator, ScrollView, Platform,
+    TouchableOpacity, ActivityIndicator, ScrollView, Platform,ImageBackground
 } from 'react-native';
 import YouTube from 'react-native-youtube';
 
@@ -109,7 +109,7 @@ export class MediaPlayer extends Component {
                     </View>
                     <View style={detailView}>
                         <View style={titleView}>
-                            <Text style={titleText}>{item.title}</Text>
+                            <Text ellipsizeMode={'tail'} numberOfLines={2} style={titleText}>{item.title}</Text>
                         </View>
                         <View style={lengthView}>
                             <Text style={lengthText}>{item.length}</Text>
@@ -131,6 +131,7 @@ export class MediaPlayer extends Component {
         return (
             <SafeAreaView style={safeAreaView}>
                 <AppHeader title={'Patients Expereince'} onPress={()=>this.props.navigation.openDrawer()}/>
+                <ImageBackground source={require('../Images/assets/screen_bg.png')} style={{flex:1}}>
                 <View style={mainView}>
                     <View style={headingView}>
                         <Text style={headingText}>Experience of Recovered Patients</Text>
@@ -151,6 +152,7 @@ export class MediaPlayer extends Component {
                     </Modal>
                     }
                 </View>
+                </ImageBackground>
             </SafeAreaView>
         );
     }
@@ -177,25 +179,28 @@ const styles = StyleSheet.create({
         height: '90%',
     },
     containerStyle: {
-        width,
-        height: height * 0.50,
+        width:width-30,
+        height: height * 0.40,
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomWidth: height*.0017,
         marginTop: '3%',
         marginBottom: '3%',
-        padding:height*.010
+        padding:height*.010,
+        alignSelf:'center'
     },
     imageView: {
-        width,
+        width:width-50,
         height: '80%',
+        alignSelf: 'center'
     },
     imageStyle: {
-        width,
+        width:width-50,
         height: '100%',
+        borderRadius:10
     },
     detailView: {
-        width,
+        width:width-50,
         height: '20%',
         flexDirection: 'row',
         justifyContent: 'center',

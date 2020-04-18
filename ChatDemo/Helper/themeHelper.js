@@ -47,11 +47,15 @@ const color = {
   red: '#D12A2F',
   yellow: '#EAD836',
   green: '#228C44',
-  lightBlue: '#5578C4',
-  lightGray: '#DCDCDC',
-  gray: '#B6C2DA',
+  lightGray: '#F6F6F7',
+  gray: '#A7ACB1',
   darkGray: '#BFBFC0',
   purple: '#3D0078',
+  lightRed:'#FFE0E6',
+  lightBlue:'#F0F7FF',
+  darkBlue:'#75B7FF',
+  lightGreen:'#E4F4E7',
+  darkGreen:'#85CD95',
 };
 
 const headerColorArray = ['orange', 'orange', 'orange', 'orange', 'orange'];

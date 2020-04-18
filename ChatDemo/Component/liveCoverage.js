@@ -5,6 +5,7 @@ import axios from 'axios'
 import { format, formatDistanceToNowStrict } from 'date-fns';
 const ws = Dimensions.get('window').width;
 const hs = Dimensions.get('window').height;
+import {color} from '../Helper/themeHelper'
 
 const Updates = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -42,11 +43,8 @@ const Updates = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1, }}>
-                <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: ws * 0.06 }}>
-                    <Text style={{ fontSize: ws * 0.07 }}>Live Updates</Text>
-                </View>
-                <ScrollView style={{marginHorizontal:ws*0.03,marginTop:-(hs*0.03) }} nestedScrollEnabled={true}
+            <View style={{ width:ws-15,alignSelf:'center',height:hs*.43 }}>
+                <ScrollView style={{marginHorizontal:ws*0.03, }} nestedScrollEnabled={true}
                             refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                             }
@@ -54,11 +52,9 @@ const Updates = () => {
                     {
                         logs && logs.map((item, index) => {
                             return (
-                                <View key={index} style={{backgroundColor:'#d7d7d7',
-                                    marginVertical:ws*0.02,
+                                <View key={index} style={{backgroundColor:index % 2 == 1 ? 'white' : color.lightGray,
+                                    marginVertical:ws*0.01,
                                     padding:ws*0.01,
-                                    paddingHorizontal:ws*0.03,
-                                    borderRadius:10
                                 }}>
                                     <Text style={{fontSize:ws*0.03,fontWeight:'bold',color:'grey'}}>{item.time}</Text>
                                     <Text style={{fontSize:ws*0.04,fontWeight:'bold'}}>{item.activity}</Text>

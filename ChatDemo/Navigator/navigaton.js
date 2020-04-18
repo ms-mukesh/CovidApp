@@ -35,6 +35,8 @@ import IndiaNews3 from '../Component/indiaNews3'
 import safetyPage from '../Component/safetyFromCorona'
 import LiveCoverage from '../Component/liveCoverage'
 
+import NewNewsTabs from '../Component/newsPageDemo'
+
 const stack = createStackNavigator({
     DrawerTemp,LiveCoverage,safetyPage,IndiaNews3,IndiaNews2,ResponseRecovery,WoroldNewsTemp2,NewsPage,WorldNews,IndiaNews,HelpCenter,MapDemo,Drawer,Tabs,loginPage,barChartDemo,rnFecthDemo,homePage, ChatPage,RegisterPage,ChatPage1,StatInfo
 },{

@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import AppHeader from '../Component/appHeader'
 import { NavigationEvents } from 'react-navigation';
+import {normalize,screenHeight,screenWidth,color} from '../Helper/themeHelper'
 import {
     View,
     Text,
     StatusBar,
     Image,
-    Platform
+    Platform,
+    ImageBackground
 } from 'react-native';
 
 let LatLog = {
@@ -213,33 +215,73 @@ const Map = (props,navigation) => {
             }
         }
     }
+    //  const _callOut = (item) => {
+    //
+    //     const data={"active": item.active, "confirmed": item.confirm, "deaths": item.deaths, "deltaconfirmed": item.confirm, "deltadeaths": item.deaths, "deltarecovered": item.recovered, "lastupdatedtime": item.update, "recovered": item.recovered, "state": item.stateName, "statecode": "MH"}
+    //     return <Callout onPress={() =>  props.navigation.navigate('StateInfo',{data})} >
+    //         <View style={{padding:screenHeight*0.010,height:screenHeight*.30,width:screenWidth*.7,marginHorizontal:-(screenWidth*.1),backgroundColor:'red',marginLeft:-(screenHeight*.02),marginTop:-(screenHeight*.02),marginBottom:-(screenHeight*0.015)}}>
+    //
+    //
+    //
+    //
+    //             <Text>Place: {item.stateName}</Text>
+    //             <Text>Confirmed: {item.confirm}</Text>
+    //             <Text>Recovered: {item.recovered}</Text>
+    //             <Text>Death: {item.deaths}</Text>
+    //             <Text>Active: {item.active}</Text>
+    //             <Text>Today confirmed: {item.tconfirm}</Text>
+    //             <Text>Today death: {item.tdeaths}</Text>
+    //             <Text>Today recovered: {item.trecovered}</Text>
+    //             <Text>Last updateed: {item.update}</Text>
+    //         </View>
+    //     </Callout>
+    // }
+
+
 
     const _callOut = (item) => {
-
         const data={"active": item.active, "confirmed": item.confirm, "deaths": item.deaths, "deltaconfirmed": item.confirm, "deltadeaths": item.deaths, "deltarecovered": item.recovered, "lastupdatedtime": item.update, "recovered": item.recovered, "state": item.stateName, "statecode": "MH"}
         return <Callout onPress={() =>  props.navigation.navigate('StateInfo',{data})} >
-            <View >
-                <Text>Place: {item.stateName}</Text>
-                <Text>Confirmed: {item.confirm}</Text>
-                <Text>Recovered: {item.recovered}</Text>
-                <Text>Death: {item.deaths}</Text>
-                <Text>Active: {item.active}</Text>
-                <Text>Today confirmed: {item.tconfirm}</Text>
-                <Text>Today death: {item.tdeaths}</Text>
-                <Text>Today recovered: {item.trecovered}</Text>
-                <Text>Last updateed: {item.update}</Text>
+            <View style={{height:screenHeight*.40,width:screenWidth*.7,marginHorizontal:-(screenWidth*.1),marginLeft:-(screenHeight*.02),marginTop:-(screenHeight*.02),marginBottom:-(screenHeight*0.015)}}>
+
+                <View style={{flex:2,alignItems:'center',justifyContent:'center',backgroundColor:'#d0b07c'}}>
+                    <Image source={require('../Images/coivdIcon.png')} style={{height:50,width:50,marginLeft:-(screenWidth*0.06)}}/>
+                </View>
+                <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#1f245a'}}>
+                    <Text style={{fontSize:normalize(15),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>{item.stateName.toUpperCase()}</Text>
+                </View>
+                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:'white'}}>
+                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Confirmed: {item.confirm}</Text>
+                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Active: {item.active}</Text>
+                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Death: {item.deaths}</Text>
+                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Recovered: {item.recovered}</Text>
+                </View>
+                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center'}}>
+                    <Text style={{fontSize:normalize(15),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'orange'}}>Today</Text>
+                    <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Confirmed: {item.tconfirm>0?"+"+item.tconfirm:0}</Text>
+                    <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Death: {item.tdeaths>0?"+"+item.tdeaths:0}</Text>
+                    <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Recovered: {item.trecovered>0?"+"+item.trecovered:0}</Text>
+                </View>
+
+                {/*<Text>Place: {item.stateName}</Text>*/}
+                {/*<Text>Confirmed: {item.confirm}</Text>*/}
+                {/*<Text>Recovered: {item.recovered}</Text>*/}
+                {/*<Text>Death: {item.deaths}</Text>*/}
+                {/*<Text>Active: {item.active}</Text>*/}
+                {/*<Text>Today confirmed: {item.tconfirm}</Text>*/}
+                {/*<Text>Today death: {item.tdeaths}</Text>*/}
+                {/*<Text>Today recovered: {item.trecovered}</Text>*/}
+                {/*<Text>Last updateed: {item.update}</Text>*/}
             </View>
         </Callout>
     }
 
     useEffect(() => {
         fetchStates();
-
         const unsubscribe = props.navigation.addListener('focus', () => {
             setinitialLatitude(20.593683)
             setinitialLogitude(78.962883)
             setKeyRefresh(keyRefresh+Math.floor(Math.random() * 100)+1)
-            // alert(keyRefresh)
         });
 
 
@@ -265,6 +307,7 @@ const Map = (props,navigation) => {
             <StatusBar barStyle="dark-content" onBlur={()=>alert("hello")} />
             <AppHeader title={'India-Map'} onPress={()=>props.navigation.openDrawer()}/>
             <MapView
+
                 // provider={PROVIDER_GOOGLE}
                 key={Math.floor(Math.random() * 100)}
                 style={{ flex: 1 }}
@@ -282,12 +325,15 @@ const Map = (props,navigation) => {
                     states && states.map((item) => {
                             return (
                                 <Marker
+
                                     key={item.stateName}
                                     coordinate={item.coo}
                                     image={require('../Images/viruiconTemp2.png')
                                     }
 
                                 >
+
+
                                     {_callOut(item)}
                                 </Marker>
                             )
