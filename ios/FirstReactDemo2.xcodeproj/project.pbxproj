@@ -18,7 +18,7 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* FirstReactDemo2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FirstReactDemo2Tests.m */; };
 		67FA641981202B9F65ED96CA /* libPods-FirstReactDemo2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C28FE512A517CE6E0013EE6D /* libPods-FirstReactDemo2.a */; };
-		7510C85E244646030060239D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7510C85D244646030060239D /* LaunchScreen.storyboard */; };
+		868971B2244AD4D700A1DEED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 868971B1244AD4D700A1DEED /* LaunchScreen.storyboard */; };
 		D60410E8E3C6C5D054C53F47 /* libPods-FirstReactDemo2Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 72C6DBA7A5F4E2E9D2A26A78 /* libPods-FirstReactDemo2Tests.a */; };
 /* End PBXBuildFile section */
 
@@ -59,9 +59,9 @@
 		3E5A31C08FB5812D216D93E0 /* Pods-FirstReactDemo2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstReactDemo2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-FirstReactDemo2-tvOSTests/Pods-FirstReactDemo2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		53CA646CB174353EA6BA5455 /* Pods-FirstReactDemo2-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstReactDemo2-tvOS.release.xcconfig"; path = "Target Support Files/Pods-FirstReactDemo2-tvOS/Pods-FirstReactDemo2-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		72C6DBA7A5F4E2E9D2A26A78 /* libPods-FirstReactDemo2Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FirstReactDemo2Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7510C85D244646030060239D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7510C85F24467FCE0060239D /* Covid.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Covid.entitlements; path = FirstReactDemo2/Covid.entitlements; sourceTree = "<group>"; };
 		856E70ACF97338DA1544E259 /* Pods-FirstReactDemo2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstReactDemo2.release.xcconfig"; path = "Target Support Files/Pods-FirstReactDemo2/Pods-FirstReactDemo2.release.xcconfig"; sourceTree = "<group>"; };
+		868971B1244AD4D700A1DEED /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ../../../../Downloads/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89337918987FB20D4E397F5A /* Pods-FirstReactDemo2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstReactDemo2.debug.xcconfig"; path = "Target Support Files/Pods-FirstReactDemo2/Pods-FirstReactDemo2.debug.xcconfig"; sourceTree = "<group>"; };
 		95E6464D8155CC6852E0E61D /* Pods-FirstReactDemo2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstReactDemo2Tests.debug.xcconfig"; path = "Target Support Files/Pods-FirstReactDemo2Tests/Pods-FirstReactDemo2Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C28FE512A517CE6E0013EE6D /* libPods-FirstReactDemo2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FirstReactDemo2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,8 +126,8 @@
 		13B07FAE1A68108700A75B9A /* FirstReactDemo2 */ = {
 			isa = PBXGroup;
 			children = (
+				868971B1244AD4D700A1DEED /* LaunchScreen.storyboard */,
 				7510C85F24467FCE0060239D /* Covid.entitlements */,
-				7510C85D244646030060239D /* LaunchScreen.storyboard */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -355,8 +355,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7510C85E244646030060239D /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				868971B2244AD4D700A1DEED /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

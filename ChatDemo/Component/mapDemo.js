@@ -8,10 +8,13 @@ import {
     View,
     Text,
     StatusBar,
-    Image,
+
     Platform,
-    ImageBackground
+    ImageBackground,
+
 } from 'react-native';
+
+import Svg,{Image} from 'react-native-svg'
 
 let LatLog = {
     Kerala: {
@@ -243,24 +246,28 @@ const Map = (props,navigation) => {
         const data={"active": item.active, "confirmed": item.confirm, "deaths": item.deaths, "deltaconfirmed": item.confirm, "deltadeaths": item.deaths, "deltarecovered": item.recovered, "lastupdatedtime": item.update, "recovered": item.recovered, "state": item.stateName, "statecode": "MH"}
         return <Callout onPress={() =>  props.navigation.navigate('StateInfo',{data})} >
             <View style={{height:screenHeight*.40,width:screenWidth*.7,marginHorizontal:-(screenWidth*.1),marginLeft:-(screenHeight*.02),marginTop:-(screenHeight*.02),marginBottom:-(screenHeight*0.015)}}>
-
-                <View style={{flex:2,alignItems:'center',justifyContent:'center',backgroundColor:'#d0b07c'}}>
-                    <Image source={require('../Images/coivdIcon.png')} style={{height:50,width:50,marginLeft:-(screenWidth*0.06)}}/>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#d0b07c'}}>
+                    <View style={{flex:1,marginLeft:-(screenWidth*0.06),justifyContent:'center',}}>
+                    <Svg width={screenHeight*.04} height={screenHeight*.04}>
+                        <Image href={require('../Images/coivdicon.png')} width={screenHeight*.04} height={screenHeight*.04}/>
+                    </Svg>
+                    </View>
                 </View>
                 <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#1f245a'}}>
-                    <Text style={{fontSize:normalize(15),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>{item.stateName.toUpperCase()}</Text>
+                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>{item.stateName.toUpperCase()}</Text>
                 </View>
-                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:'white'}}>
-                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Confirmed: {item.confirm}</Text>
-                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Active: {item.active}</Text>
-                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Death: {item.deaths}</Text>
-                    <Text style={{fontSize:normalize(13),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Recovered: {item.recovered}</Text>
+                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:'white',padding:20}}>
+                    <Text style={{fontSize:normalize(12),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Confirmed: {item.confirm}</Text>
+                    <Text style={{fontSize:normalize(12),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Active: {item.active}</Text>
+                    <Text style={{fontSize:normalize(12),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Death: {item.deaths}</Text>
+                    <Text style={{fontSize:normalize(12),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Recovered: {item.recovered}</Text>
                 </View>
-                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{fontSize:normalize(15),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'orange'}}>Today</Text>
+                <View style={{flex:2,backgroundColor:'#ce000a',justifyContent:'center',alignItems:'center',padding:20}}>
+                    <Text style={{fontSize:normalize(15),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'orange',marginTop:-(screenHeight*0.03)}}>Today</Text>
                     <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Confirmed: {item.tconfirm>0?"+"+item.tconfirm:0}</Text>
                     <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Death: {item.tdeaths>0?"+"+item.tdeaths:0}</Text>
                     <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Recovered: {item.trecovered>0?"+"+item.trecovered:0}</Text>
+                    <Text style={{fontSize:normalize(10),fontWeight:'bold',marginLeft:-(screenWidth*0.06),color:'white'}}>Click here for more details</Text>
                 </View>
 
                 {/*<Text>Place: {item.stateName}</Text>*/}
@@ -344,6 +351,5 @@ const Map = (props,navigation) => {
         </>
     );
 };
-
 
 export default Map;

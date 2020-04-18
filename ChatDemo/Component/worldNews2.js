@@ -161,19 +161,19 @@ export default class worldnewslist extends Component {
                         <View style={{height: h*.30,width:w,marginTop: h*.020,alignSelf:'center',}}>
                             <ScrollView showsHorizontalScrollIndicator={false} ref={(node)=>this.scroll=node} scrollEventThrottle={16} nestedScrollEnabled={true}  pagingEnabled={true} horizontal={true}>
                                 <View style={{flex:1,width:w,height:null}}>
-                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImag1.jpeg')}/>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImage1.jpeg')}/>
                                 </View>
                                 <View style={{flex:1,width:w,height:null,}}>
-                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoInag2.png')}/>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImage2.jpeg')}/>
                                 </View>
                                 <View style={{flex:1,width:w,height:null}}>
-                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg3.jpeg')}/>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImage3.jpeg')}/>
                                 </View>
                                 <View style={{flex:1,width:w,height:null}}>
-                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg4.png')}/>
+                                    <Image style={{width:w-40,height:h*.30,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImage4.jpeg')}/>
                                 </View>
                                 <View style={{flex:1,width:w,height:null}}>
-                                    <Image style={{width:w-40,height:h*.40,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoimg5.jpeg')}/>
+                                    <Image style={{width:w-40,height:h*.40,alignSelf:'center',borderRadius:h*.010}} source={require('../Images/whoImage5.jpeg')}/>
                                 </View>
                             </ScrollView>
 

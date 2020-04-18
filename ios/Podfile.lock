@@ -533,7 +533,7 @@ PODS:
     - React
   - RNStaticSafeAreaInsets (2.0.0):
     - React
-  - RNSVG (12.0.3):
+  - RNSVG (12.1.0):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -771,11 +771,11 @@ SPEC CHECKSUMS:
   RNReanimated: 4e102df74a9674fa943e05f97f3362b6e44d0b48
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNStaticSafeAreaInsets: e4450176adbf197061543e4a4aa82036b3d7abe0
-  RNSVG: 7e16ddfc6e00d5aa69c9eb83e699bcce5dcb85d4
+  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YoutubePlayer-in-WKWebView: af2f5929fc78882d94bfdfeea999b661b78d9717
 
-PODFILE CHECKSUM: 3633a7657119cfd8e4a610c3566a1629d99560d6
+PODFILE CHECKSUM: 98458280bd60220acabbd90fe2dec0d70a47be88
 
 COCOAPODS: 1.8.4
