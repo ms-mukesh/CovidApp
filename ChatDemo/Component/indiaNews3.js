@@ -63,6 +63,36 @@ export default class worldnewslist extends Component {
         }))
     }
 
+
+
+    getHeadlineDemo=()=>{
+        return new Promise((resolve=>{
+            axios.get('https://covidapi123.herokuapp.com/covid/api/getNewsHeading')
+                .then((res)=>{
+                    return resolve(res);
+                }).catch((err)=>{
+                console.log(err)
+            })
+        }))
+
+    }
+
+
+    getNewsDemo=(dataArray)=>{
+
+        const data={"pageUrl":dataArray}
+
+        return new Promise((resolve=>{
+            axios.post('https://covidapi123.herokuapp.com/covid/api/getNews2',data)
+                .then((res)=>{
+                    return resolve(res.data);
+                }).catch((err)=>{
+                    console.log(err)
+            })
+        }))
+
+    }
+
     getNewContent=(newsHeadlineArray)=>{
         return new Promise((resolve=>{
             let urldata='https://timesofindia.indiatimes.com'
@@ -72,7 +102,7 @@ export default class worldnewslist extends Component {
             let i=0;
             newsHeadlineArray.map((data,index)=>{
                 tempUrl=urldata+data
-                if(index<17) {
+                if(index<16) {
                     axios.get(tempUrl)
                         .then((res)=>{
                             let str=res.data;
@@ -80,7 +110,6 @@ export default class worldnewslist extends Component {
                             let tempImageURl=''
                             tempImageURl=imgStr.substring(imgStr.indexOf('<meta property="og:image"'),imgStr.indexOf('<meta property="og:image"')+200)
                             tempImageArray.push(tempImageURl.substring(tempImageURl.indexOf('"',25)+1,tempImageURl.indexOf('"',50)))
-
                             let tempNews=str.substring(str.indexOf('<div class="_3WlLe clearfix  ">'),str.length)
                             tempNews=tempNews.substring(0,str.lastIndexOf('<br/>')).replace( /(<([^>]+)>)/ig, '')
                             tempNews=tempNews.split(".")
@@ -91,7 +120,10 @@ export default class worldnewslist extends Component {
                                 return resolve(tempNewsArray);
                             }
 
-                        });
+                        }).catch((err)=>{
+                            console.log("error"+err)
+
+                    });
                 }
             })
 
@@ -102,33 +134,65 @@ export default class worldnewslist extends Component {
            this.setState({showDetailNewsFlag:true,tempIndex:data})
             this.setState({currentImage:this.state.newsImageArray[index]})
     }
-    componentDidMount(): void {
-        this.getNews().then((res)=> {
-            let str = res.data;
-            let news;
-            news=str.substring(str.lastIndexOf('<ul class="list5 clearfix" data-msid="-2128936835">'),str.length)
-            var count = (news.match(/<a href=/g) || []).length;
 
-            var regex = /<a href=/gi, result, indices = [];
-            while ( (result = regex.exec(news)) ) {
-                indices.push(result.index);
-            }
-            let url=[]
-            for(let i=0;i<count;i++)
-            {
-                let temp=news.substring(indices[i],news.length)
-                url.push(temp.substring(9,temp.indexOf('"',10)))
-            }
-            this.getNewContent(url).then((res)=>{
-                let tempNewsArray=[]
-                let tempImageArray=[]
+
+    componentDidMount(): void {
+        // this.getNews().then((res)=> {
+        //     let str = res.data;
+        //     let news;
+        //     news=str.substring(str.lastIndexOf('<ul class="list5 clearfix" data-msid="-2128936835">'),str.length)
+        //     var count = (news.match(/<a href=/g) || []).length;
+        //
+        //     var regex = /<a href=/gi, result, indices = [];
+        //     while ( (result = regex.exec(news)) ) {
+        //         indices.push(result.index);
+        //     }
+        //     let url=[]
+        //     for(let i=0;i<count;i++)
+        //     {
+        //         let temp=news.substring(indices[i],news.length)
+        //         url.push(temp.substring(9,temp.indexOf('"',10)))
+        //     }
+        //     let tempUrl2=[]
+        //     url.map((data,index)=>{
+        //         if(index<10)
+        //         {
+        //             tempUrl2.push(data)
+        //         }
+        //
+        //     })
+        //     this.getNewContent(url).then((res)=>{
+        //         let tempNewsArray=[]
+        //         let tempImageArray=[]
+        //         res.map((data,index)=>{
+        //             tempNewsArray.push(data.news)
+        //             tempImageArray.push(data.image)
+        //         })
+        //
+        //         this.setState({newsContentArray:tempNewsArray,newsImageArray:tempImageArray})
+        //         this.setState({renderFlag:false})
+        //     }).catch((err)=>{
+        //         console.log("error="+err)
+        //     })
+        //
+        //
+        //
+        //
+        // })
+        let tempDemoUrls=[]
+        let tempNewsArray=[]
+        let tempImageArray=[]
+
+        this.getHeadlineDemo().then((res)=>{
+            tempDemoUrls=res.data
+            this.getNewsDemo(tempDemoUrls).then((res)=>{
+                console.log("dataaasssssss")
                 res.map((data,index)=>{
                     tempNewsArray.push(data.news)
                     tempImageArray.push(data.image)
-                })
 
-                this.setState({newsContentArray:tempNewsArray,newsImageArray:tempImageArray})
-                this.setState({renderFlag:false})
+                })
+                this.setState({renderFlag:false,newsContentArray:tempNewsArray,newsImageArray:tempImageArray})
             })
         })
    }
@@ -137,21 +201,17 @@ export default class worldnewslist extends Component {
         const {
             newsHeadinListView,
             sourceTitle
-
-
         } = style;
         const Images= [
             this.state.newsImageArray[0],
             "https://source.unsplash.com/1024x768/?water",
             "https://source.unsplash.com/1024x768/?girl",
             "https://source.unsplash.com/1024x768/?tree", // Network image
-
         ]
 
             return (
                 <SafeAreaView style={{flex:1}}>
                     <View style={{flex:1}}>
-
                         <View style={{height: h*.30,width:w,marginTop: h*.020,alignSelf:'center',}}>
                             <ScrollView  showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} ref={(node)=>this.scroll=node} scrollEventThrottle={16}   pagingEnabled={true} horizontal={true}>
                                 <View style={{flex:1,width:w,height:null}}>
@@ -174,11 +234,11 @@ export default class worldnewslist extends Component {
                         </View>
 
                         <View style={{justifyContent:'center',flexDirection:'row',marginTop: h*.015}}>
-                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:0})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,}}></View></TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*2})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*3})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*4})}}><View style={{height:h*.015,backgroundColor:'gray',width:h*0.015,borderRadius:h*0.0075,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:0})}}><View style={{height:h*.018,backgroundColor:'gray',width:h*0.018,borderRadius:h*0.009,}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w})}}><View style={{height:h*.018,backgroundColor:'gray',width:h*0.018,borderRadius:h*0.009,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*2})}}><View style={{height:h*.018,backgroundColor:'gray',width:h*0.018,borderRadius:h*0.009,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*3})}}><View style={{height:h*.018,backgroundColor:'gray',width:h*0.018,borderRadius:h*0.009,marginLeft:w*0.03}}></View></TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.scroll.scrollTo({x:w*4})}}><View style={{height:h*.018,backgroundColor:'gray',width:h*0.018,borderRadius:h*0.009,marginLeft:w*0.03}}></View></TouchableOpacity>
                         </View>
 
                     <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
@@ -186,7 +246,11 @@ export default class worldnewslist extends Component {
                     {
                         // data[0].replace(/[^a-zA-Z0-9 ]/g, "")
                         this.state.newsContentArray.map((data,index)=>{
+
+
+
                             if(data[0].substring(0,5)!=''){
+
                             return(
                                 <TouchableOpacity onPress={()=>this.showDetailNews(data,index)}>
                                     <View style={{height:h*0.15,width:w-40,alignSelf:'center',marginTop:h*0.01,backgroundColor:'lightgray',borderRadius:5}}>

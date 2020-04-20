@@ -297,7 +297,7 @@ export default class  rnFethcDemo extends React.Component{
                             {
                                 this.state.dateWiesCasesArray.slice(0).reverse().map((data,index)=>{
                                     return(
-                                        <View style={{height:screenHeight*0.05,backgroundColor:index%2==1 ?'white':'#dedfe0',flexDirection:'row'}}>
+                                        <View style={{height:screenHeight*0.05,backgroundColor:index % 2 == 1 ? '#ECEDEE' : 'white',flexDirection:'row'}}>
                                             <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                                                 <Text style={listDay}>{this.state.dateArray[this.state.dateWiesCasesArray.length-1-index]}</Text>
                                             </View>

@@ -335,11 +335,12 @@ class rnFethcDemo extends React.Component {
 
   intialixation = () => {
     // this.fetchCities()
+    let IndiaCase
 
     this.fetchStates();
     this.getCountryData1().then(res => {
       let str = res.data;
-      let IndiaCase = str.substring(str.indexOf(':') + 1, str.indexOf('Cases'));
+       IndiaCase = str.substring(str.indexOf(':') + 1, str.indexOf('Cases'));
       this.setState({CountryCase: IndiaCase});
       let IndiaDeath = str.substring(
         str.indexOf('and') + 4,
@@ -358,7 +359,6 @@ class rnFethcDemo extends React.Component {
     // })
     this.getDemo().then(res => {
       let str = res.data;
-
       let tempDeath = str.substring(
         str.indexOf(
           'series: [{\n' +
@@ -454,6 +454,15 @@ class rnFethcDemo extends React.Component {
       this.setState({maxDailyReovered: Math.max.apply(null, recoverCases)});
       this.setState({maxDaiyProgress: Math.max.apply(null, activeCases)});
       this.setState({dayArray: daysOfActiveCase, dailyCases: activeCases});
+
+
+      console.log(activeCases[activeCases.length-1])
+
+      this.setState({
+        todayCases:
+            parseInt(this.state.CountryCase.replace(/[^0-9]/g, '')) -
+            parseInt(activeCases[activeCases.length-1]),
+      });
       this.setState({cityData: {}});
       this.setState({
         chartData: {
@@ -502,11 +511,7 @@ class rnFethcDemo extends React.Component {
         },
       });
       this.props.setLineChartData(this.state.chartData);
-      this.setState({
-        todayCases:
-          parseInt(this.state.CountryCase.replace(/[^0-9]/g, '')) -
-          parseInt(this.state.dailyCases[this.state.dailyCases.length - 1]),
-      });
+
     });
 
     // this.getStateData().then((res)=>{
@@ -764,7 +769,7 @@ class rnFethcDemo extends React.Component {
 
                       </View>
                       <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(59,59,59,0.25)'}}>
-                        <Text style={[upperLabel,{color:'white'}]}>+ {this.state.todayCases ? this.state.todayCases :'Counting..'}</Text>
+                        <Text style={[upperLabel,{color:'white'}]}>+ {this.state.CountryCase ? parseInt(this.state.CountryCase.replace(/[^0-9]/g, ''))-parseInt(this.state.dailyCases[this.state.dailyCases.length-1]):'Counting..' }</Text>
                       </View>
                     </View>
 
@@ -946,6 +951,7 @@ class rnFethcDemo extends React.Component {
                             .slice(0)
                             .reverse()
                             .map((data, index) => {
+
                               return (
                                 <View>
                                   <View
@@ -968,7 +974,9 @@ class rnFethcDemo extends React.Component {
                                   </View>
                                 </View>
                               );
-                            })}
+                            })
+
+                          }
                     </ScrollView>
 
                   </View>
@@ -1260,13 +1268,13 @@ const style = StyleSheet.create({
 
   },
   progressDay: {
-    fontSize: normalize(16),
+    fontSize: normalize(13),
     fontWeight: 'bold',
     textAlign: 'left',
     flex: 6,
   },
   progresCases: {
-    fontSize: normalize(16),
+    fontSize: normalize(13),
     fontWeight: 'bold',
     flex: 4,
     textAlign: 'right',

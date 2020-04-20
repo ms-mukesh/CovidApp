@@ -283,6 +283,41 @@ const Map = (props,navigation) => {
         </Callout>
     }
 
+
+    // const _callOut = (item) => {
+    //     const data={"active": item.active, "confirmed": item.confirm, "deaths": item.deaths, "deltaconfirmed": item.confirm, "deltadeaths": item.deaths, "deltarecovered": item.recovered, "lastupdatedtime": item.update, "recovered": item.recovered, "state": item.stateName, "statecode": "MH"}
+    //     return <Callout onPress={() =>  props.navigation.navigate('StateInfo',{data})} >
+    //         <View style={{height:screenHeight*.40,width:screenWidth*.40,backgroundColor:'red'}}>
+    //             <View style={{flex:1,backgroundColor:'#d0b07c'}}>
+    //                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+    //                     <Svg width={screenHeight*.04} height={screenHeight*.04}>
+    //                         <Image href={require('../Images/coivdicon.png')} width={screenHeight*.04} height={screenHeight*.04}/>
+    //                     </Svg>
+    //                 </View>
+    //             </View>
+    //             <View style={{flex:1,backgroundColor:'#1f245a',alignItems:'center',justifyContent:'center'}}>
+    //                 <Text style={{fontSize:normalize(10),fontWeight:'bold',color:'white'}}>{item.stateName.toUpperCase()}</Text>
+    //
+    //             </View>
+    //             <View style={{flex:2,backgroundColor:'#ce000a',borderBottomWidth:1,borderBottomColor:'white',alignItems:'center',justifyContent:'center',padding:10}}>
+    //                 <Text style={{fontSize:normalize(12),fontWeight:'bold',color:'white'}}>Confirmed: {item.confirm}</Text>
+    //                 <Text style={{fontSize:normalize(12),fontWeight:'bold',color:'white'}}>Active: {item.active}</Text>
+    //                 <Text style={{fontSize:normalize(12),fontWeight:'bold',color:'white'}}>Death: {item.deaths}</Text>
+    //                 <Text style={{fontSize:normalize(12),fontWeight:'bold',color:'white'}}>Recovered: {item.recovered}</Text>
+    //             </View>
+    //             <View style={{flex:2,backgroundColor:'#ce000a',alignItems:'center',padding:10}}>
+    //                 <Text style={{fontSize:normalize(15),fontWeight:'bold',color:'orange',}}>Today</Text>
+    //                 <Text style={{fontSize:normalize(10),fontWeight:'bold',color:'white'}}>Confirmed: {item.tconfirm>0?"+"+item.tconfirm:0}</Text>
+    //                 <Text style={{fontSize:normalize(10),fontWeight:'bold',color:'white'}}>Death: {item.tdeaths>0?"+"+item.tdeaths:0}</Text>
+    //                 <Text style={{fontSize:normalize(10),fontWeight:'bold',color:'white'}}>Recovered: {item.trecovered>0?"+"+item.trecovered:0}</Text>
+    //                 <Text style={{fontSize:normalize(10),fontWeight:'bold',color:'white',}}>Click here for more details</Text>
+    //             </View>
+    //
+    //         </View>
+    //
+    //     </Callout>
+    // }
+
     useEffect(() => {
         fetchStates();
         const unsubscribe = props.navigation.addListener('focus', () => {

@@ -18,7 +18,7 @@ const hs = Dimensions.get('window').height;
 import TopHeader from '../Component/headerForBack'
 import {jsTypeToCppType} from 'react-native/ReactCommon/hermes/inspector/tools/msggen/src/Converters';
 import axios from 'axios';
-import {color, normalize, screenHeight} from '../Helper/themeHelper';
+import {color, normalize, screenHeight, screenWidth} from '../Helper/themeHelper';
 
 import icon1 from '../Images/assets/covid_1.png'
 import icon2 from '../Images/assets/covid_2.png'
@@ -238,7 +238,7 @@ debugger
 
                         <View style={{height: hs*.50,width:ws-50,alignSelf:'center',marginTop: hs*.040}}>
                             <View style={{height: hs*.05,backgroundColor:'red',flexDirection:'row',}}>
-                                <Text style={{flex:3,backgroundColor:color.purple,fontSize:normalize(18),fontWeight:'bold',color:'white',padding:hs*0.010}}>Location</Text>
+                                <Text style={{flex:2.8,backgroundColor:color.purple,fontSize:normalize(18),fontWeight:'bold',color:'white',padding:hs*0.010}}>Location</Text>
                                 <Text style={{flex:1,fontSize:normalize(18),fontWeight:'bold',backgroundColor:'red',color:'white',padding:hs*0.010}}>Death</Text>
                                 <Text style={{flex:1,fontSize:normalize(18),fontWeight:'bold',backgroundColor:'red',color:'white',padding:hs*0.010}}>Cases</Text>
                             </View>
@@ -260,23 +260,31 @@ debugger
                                                             fontSize: ws * 0.05,
                                                             color: 'red',
                                                             flex: 1,
-                                                            fontWeight: 'bold'
+                                                            fontWeight: 'bold',
+
                                                         }}>{item.death}</Text>
-                                                        <View style={{flexDirection: 'row', width: ws * .22, flex: 1}}>
+                                                        <View style={{flexDirection: 'row', width: ws * .22, flex: 1,marginRight:screenWidth*0.035}}>
+
                                                             <Text style={{
+
                                                                 width: ws * 0.20,
-                                                                fontSize: ws * 0.05,
+                                                                fontSize: normalize(13),
                                                                 fontWeight: 'bold',
                                                                 color: '#b8462d',
                                                                 textAlign: 'center',
+
+
                                                             }}>{item.total}</Text>
                                                             {item.today > 0 && <Text style={{
+
                                                                 textAlign: 'center',
                                                                 fontWeight: 'bold',
-                                                                color: 'green',
+                                                                color: 'red',
+                                                                fontSize: normalize(10),
                                                                 marginLeft: -(ws * .06),
                                                                 marginTop: -(ws * .015)
                                                             }}>+{item.today}</Text>}
+
                                                         </View>
                                                     </View>
                                                 )
