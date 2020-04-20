@@ -257,7 +257,7 @@ debugger
                                                     }}>
                                                         <Text style={{flex: 3, fontSize: ws * 0.05}}>{item.city}</Text>
                                                         <Text style={{
-                                                            fontSize: ws * 0.05,
+                                                            fontSize: normalize(14),
                                                             color: 'red',
                                                             flex: 1,
                                                             fontWeight: 'bold',
@@ -276,15 +276,13 @@ debugger
 
                                                             }}>{item.total}</Text>
                                                             {item.today > 0 && <Text style={{
-
                                                                 textAlign: 'center',
                                                                 fontWeight: 'bold',
                                                                 color: 'red',
                                                                 fontSize: normalize(10),
-                                                                marginLeft: -(ws * .06),
-                                                                marginTop: -(ws * .015)
+                                                                marginLeft: -(ws * .08),
+                                                                marginTop: -(ws * .020)
                                                             }}>+{item.today}</Text>}
-
                                                         </View>
                                                     </View>
                                                 )
