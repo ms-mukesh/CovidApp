@@ -6,7 +6,7 @@ import {
   ScrollView,
   Dimensions,
   PixelRatio,
-    ImageBackground
+  ImageBackground,
 } from 'react-native';
 let h = Dimensions.get('window').height;
 let w = Dimensions.get('window').width;
@@ -293,7 +293,7 @@ class IndiaGraphPage extends React.Component {
                       style={{
                         alignSelf: 'center',
                         fontWeight: 'bold',
-                        fontSize: normalize(11),
+                        fontSize: normalize(12),
                         marginTop: h * 0.001,
                       }}>
                       {dayArray[dayArray.length - 1 - index]}
@@ -361,7 +361,7 @@ class IndiaGraphPage extends React.Component {
                   }}>
                   <Text
                     style={{
-                      fontSize: w * 0.035,
+                      fontSize: normalize(12),
                       fontWeight: '600',
                       color: 'black',
                       marginTop: index == 0 ? h * 0.015 : 0,
@@ -390,41 +390,43 @@ class IndiaGraphPage extends React.Component {
           onPress={() => this.props.navigation.openDrawer()}
         />
         <ScrollView style={{flex: 1}}>
-            <ImageBackground source={require('../Images/assets/screen_bg.png')} style={{flex:1}}>
-          {this.verticalChart1(
-            this.props.data.dailyProgres,
-            this.props.data.dayArray,
-            'Graph For Daily Progress',
-            maxDailyProgrees,
-          )}
-          {this.verticalChart1(
-            this.props.data.dailyCases,
-            this.props.data.dayArray,
-            'Graph For Daily Accumulated Cases',
-            maxDailyCase,
-          )}
-          {this.verticalChart1(
-            this.props.data.recoveredCases,
-            this.props.data.dayArray,
-            'Graph For Daily Recovering',
-            maxRecovered,
-          )}
+          <ImageBackground
+            source={require('../Images/assets/screen_bg.png')}
+            style={{flex: 1}}>
+            {this.verticalChart1(
+              this.props.data.dailyProgres,
+              this.props.data.dayArray,
+              'Graph For Daily Progress',
+              maxDailyProgrees,
+            )}
+            {this.verticalChart1(
+              this.props.data.dailyCases,
+              this.props.data.dayArray,
+              'Graph For Daily Accumulated Cases',
+              maxDailyCase,
+            )}
+            {this.verticalChart1(
+              this.props.data.recoveredCases,
+              this.props.data.dayArray,
+              'Graph For Daily Recovering',
+              maxRecovered,
+            )}
 
-          {/*{this.displayChat()}*/}
-          {this.verticalChart1(
-            tempStateCase1.reverse(),
-            tempStateName1.reverse(),
-            'Check where your State Stands',
-            maxCasewithState,
-          )}
+            {/*{this.displayChat()}*/}
+            {this.verticalChart1(
+              tempStateCase1.reverse(),
+              tempStateName1.reverse(),
+              'Check where your State Stands',
+              maxCasewithState,
+            )}
 
-          {this.verticalChart1(
-            this.props.data.dailyDeathData,
-            this.props.data.dayArray,
-            'Graph For Deaths',
-            maxDeath,
-          )}
-            </ImageBackground>
+            {this.verticalChart1(
+              this.props.data.dailyDeathData,
+              this.props.data.dayArray,
+              'Graph For Deaths',
+              maxDeath,
+            )}
+          </ImageBackground>
         </ScrollView>
       </View>
     );

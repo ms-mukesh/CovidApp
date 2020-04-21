@@ -51,7 +51,6 @@ export default class Header extends React.Component {
             style={{
               height: h * 0.1,
               width: w * 0.9,
-              alignItems: 'center',
               justifyContent: 'center',
             }}>
             <Text
@@ -59,7 +58,7 @@ export default class Header extends React.Component {
                 color: 'white',
                 fontSize: normalize(22),
                 fontWeight: 'bold',
-                alignSelf: 'center',
+                marginLeft: w * 0.04,
               }}>
               {title}
             </Text>
