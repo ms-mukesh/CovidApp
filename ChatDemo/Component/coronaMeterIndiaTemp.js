@@ -3,6 +3,7 @@ import AppHeader from '../Component/appHeader';
 import NetInfo from '@react-native-community/netinfo';
 import LiveCoverage from '../Component/liveCoverage';
 import {screenWidth, screenHeight, color} from '../Helper/themeHelper';
+import { NavigationEvents } from 'react-navigation'
 import {
   View,
   Text,
@@ -225,6 +226,7 @@ const normalize = size => {
 class rnFethcDemo extends React.Component {
   constructor(props) {
     super(props);
+
     this.data = [];
     this.states = [];
     this.cities = [];
@@ -268,8 +270,13 @@ class rnFethcDemo extends React.Component {
       todayRecoveredPatient: 0,
       dailyDeathArray: [],
       todayDeath: 0,
+      newTodayDeath:0,
+      newTodayRecovered:0,
+      newTodayConfirmed:0,
     };
   }
+
+
   // fetchCities = async () => {
   //     try {
   //         const [
@@ -327,16 +334,41 @@ class rnFethcDemo extends React.Component {
   getDemo = () => {
     return new Promise(resolve => {
       axios
-        .post('https://www.worldometers.info/coronavirus/country/india/')
-        .then(res => {
-          // console.log(res.data)
-          return resolve(res);
-        });
+          .post('https://www.worldometers.info/coronavirus/country/india/')
+          .then(res => {
+            // console.log(res.data)
+            return resolve(res);
+          });
     });
+  };
+  fetchTodayStatus = async () => {
+    try {
+      const [response] = await Promise.all([
+        axios.get('https://api.covid19india.org/data.json'),
+        axios.get('https://api.covid19india.org/state_district_wise.json'),
+        axios.get('https://api.covid19india.org/updatelog/log.json'),
+      ]);
+
+      let j, i;
+      let tempCases = [];
+      let todayDeath=0;
+      let todayRecovered=0;
+      let todayConfirmed=0;
+
+      for (i = 1; i < response.data.statewise.length; i++) {
+        todayDeath=todayDeath+parseInt(response.data.statewise[i].deltadeaths)
+        todayRecovered=todayRecovered+parseInt(response.data.statewise[i].deltarecovered)
+        todayConfirmed=todayConfirmed+parseInt(response.data.statewise[i].deltaconfirmed)
+      }
+      this.setState({newTodayDeath:todayDeath,newTodayRecovered:todayRecovered,newTodayConfirmed:todayConfirmed})
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   intialixation = () => {
     // this.fetchCities()
+
     let IndiaCase;
 
     this.fetchStates();
@@ -345,8 +377,8 @@ class rnFethcDemo extends React.Component {
       IndiaCase = str.substring(str.indexOf(':') + 1, str.indexOf('Cases'));
       this.setState({CountryCase: IndiaCase});
       let IndiaDeath = str.substring(
-        str.indexOf('and') + 4,
-        str.indexOf('Deaths'),
+          str.indexOf('and') + 4,
+          str.indexOf('Deaths'),
       );
       this.setState({CoutryDeath: IndiaDeath});
     });
@@ -359,94 +391,98 @@ class rnFethcDemo extends React.Component {
     //     })
     //     this.setState({stateName:tempState,stateCases:tempStateCase})
     // })
+
+
+
+
     this.getDemo().then(res => {
       let str = res.data;
       let tempDeath = str.substring(
-        str.indexOf(
-          'series: [{\n' +
-            "                name: 'Deaths',\n" +
-            "                color: '#FF9900',\n" +
-            '                lineWidth: 5,\n' +
-            '                data: ',
-        ),
-        str.length,
+          str.indexOf(
+              'series: [{\n' +
+              "                name: 'Deaths',\n" +
+              "                color: '#FF9900',\n" +
+              '                lineWidth: 5,\n' +
+              '                data: ',
+          ),
+          str.length,
       );
 
       tempDeath = tempDeath.substring(
-        tempDeath.indexOf('data: ') + 7,
-        tempDeath.indexOf(']'),
+          tempDeath.indexOf('data: ') + 7,
+          tempDeath.indexOf(']'),
       );
       tempDeath = tempDeath.split(',');
       this.setState({dailyDeathArray: tempDeath});
       this.props.setDailyDeath(this.state.dailyDeathArray);
 
       let temp =
-        '<div id="maincounter-wrap" style="margin-top:15px;">\n' +
-        '<h1>Recovered:</h1>\n' +
-        '<div class="maincounter-number" style="color:#8ACA2B ">\n' +
-        '<span>';
+          '<div id="maincounter-wrap" style="margin-top:15px;">\n' +
+          '<h1>Recovered:</h1>\n' +
+          '<div class="maincounter-number" style="color:#8ACA2B ">\n' +
+          '<span>';
 
       let temp1 =
-        '</span>\n' +
-        '</div>\n' +
-        '</div>\n' +
-        '<div style="margin-top:50px;"></div>';
+          '</span>\n' +
+          '</div>\n' +
+          '</div>\n' +
+          '<div style="margin-top:50px;"></div>';
       let recoverCase = str.substring(
-        str.indexOf(temp) + temp.length,
-        str.indexOf(temp1),
+          str.indexOf(temp) + temp.length,
+          str.indexOf(temp1),
       );
       this.setState({dailyRecoverCases: recoverCase});
       temp =
-        '  series: [{\n' +
-        "            name: 'Cases',\n" +
-        "            color: '#33CCFF',\n" +
-        '            lineWidth: 5,\n' +
-        '            data: ';
+          '  series: [{\n' +
+          "            name: 'Cases',\n" +
+          "            color: '#33CCFF',\n" +
+          '            lineWidth: 5,\n' +
+          '            data: ';
 
       let activeCases = str.substring(
-        str.indexOf(temp) + temp.length,
-        str.length,
+          str.indexOf(temp) + temp.length,
+          str.length,
       );
       temp1 = activeCases.indexOf(']');
       activeCases = activeCases.substring(1, temp1);
       activeCases = activeCases.split(',');
       let daysOfActiveCase = str.substring(
-        str.indexOf('categories: ["Feb 15",') + 13,
-        str.length,
+          str.indexOf('categories: ["Feb 15",') + 13,
+          str.length,
       );
       temp1 = daysOfActiveCase.indexOf(']');
       daysOfActiveCase = daysOfActiveCase.substring(0, temp1);
       daysOfActiveCase = daysOfActiveCase.split(',');
       temp =
-        'series: [{\n' +
-        "            name: 'Daily Cases',\n" +
-        "            color: '#999',\n" +
-        '            lineWidth: 5,\n' +
-        '            data:';
+          'series: [{\n' +
+          "            name: 'Daily Cases',\n" +
+          "            color: '#999',\n" +
+          '            lineWidth: 5,\n' +
+          '            data:';
 
       let dailyTempCases = str.substring(
-        str.lastIndexOf(temp) + 20,
-        str.length,
+          str.lastIndexOf(temp) + 20,
+          str.length,
       );
       dailyTempCases = dailyTempCases.substring(
-        dailyTempCases.indexOf('[') + 1,
-        dailyTempCases.indexOf(']'),
+          dailyTempCases.indexOf('[') + 1,
+          dailyTempCases.indexOf(']'),
       );
       dailyTempCases = dailyTempCases.split(',');
       dailyTempCases[0] = 0;
       let recoverCases = str.substring(
-        str.indexOf(
-          '  series: [{\n' +
-            "            name: 'New Recoveries',\n" +
-            "            color: '#8ACA2B',\n" +
-            '            lineWidth: 5,',
-        ),
-        str.length,
+          str.indexOf(
+              '  series: [{\n' +
+              "            name: 'New Recoveries',\n" +
+              "            color: '#8ACA2B',\n" +
+              '            lineWidth: 5,',
+          ),
+          str.length,
       );
 
       recoverCases = recoverCases.substring(
-        recoverCases.indexOf(' data: [') + 8,
-        recoverCases.indexOf(']'),
+          recoverCases.indexOf(' data: [') + 8,
+          recoverCases.indexOf(']'),
       );
       recoverCases = recoverCases.split(',');
       this.setState({dailyRecoverCases2: recoverCases});
@@ -457,12 +493,12 @@ class rnFethcDemo extends React.Component {
       this.setState({maxDaiyProgress: Math.max.apply(null, activeCases)});
       this.setState({dayArray: daysOfActiveCase, dailyCases: activeCases});
 
-      console.log(activeCases[activeCases.length - 1]);
+      // console.log(activeCases[activeCases.length - 1]);
 
       this.setState({
         todayCases:
-          parseInt(this.state.CountryCase.replace(/[^0-9]/g, '')) -
-          parseInt(activeCases[activeCases.length - 1]),
+            parseInt(this.state.CountryCase.replace(/[^0-9]/g, '')) -
+            parseInt(activeCases[activeCases.length - 1]),
       });
       this.setState({cityData: {}});
       this.setState({
@@ -487,10 +523,10 @@ class rnFethcDemo extends React.Component {
 
         this.setState({
           todayDeath:
-            parseInt(this.state.CoutryDeath) -
-            parseInt(
-              this.state.dailyDeathArray[this.state.dailyDeathArray.length - 1],
-            ),
+              parseInt(this.state.CoutryDeath) -
+              parseInt(
+                  this.state.dailyDeathArray[this.state.dailyDeathArray.length - 1],
+              ),
         });
 
         this.setState({todayRecoveredPatient: tempTodayRecovered});
@@ -512,6 +548,10 @@ class rnFethcDemo extends React.Component {
         },
       });
       this.props.setLineChartData(this.state.chartData);
+
+      this.fetchTodayStatus();
+
+
     });
 
     // this.getStateData().then((res)=>{
@@ -548,7 +588,7 @@ class rnFethcDemo extends React.Component {
     //         }
     //         tempFinalStateArray1.push(tempFinalStateArray)
     //     })
-    //     this.setState({stateDataFinal:tempFinalStateArray1})
+    //
     //     console.log(this.state.dailyCases)
     //     console.log(this.state.CountryCase)
     // })
@@ -557,10 +597,12 @@ class rnFethcDemo extends React.Component {
   checkConnectivity = () => {
     this.unsubscribe = NetInfo.addEventListener(state => {
       console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
+      console.log('Is connected?kkhkk', state.isConnected);
       if (state.isConnected) {
+        console.log('refresh')
         this.setState({internetFlag: true});
         this.intialixation();
+
       } else {
         this.setState({internetFlag: false});
       }
@@ -570,7 +612,11 @@ class rnFethcDemo extends React.Component {
   };
   componentWillUnmount(): void {
     this.unsubscribe();
+    clearInterval()
+
+    // this.willFocusSubscription.remove();
   }
+
 
   // handleFirstConnectivityChange = isConnected => {
   //   NetInfo.removeEventListener(
@@ -585,8 +631,13 @@ class rnFethcDemo extends React.Component {
   //     return true;
   //   }
   // };
+
   componentDidMount() {
     this.checkConnectivity();
+    setInterval(()=>{
+      this.checkConnectivity()
+    },10000)
+
     // if (this.checkConnectivity) {
     //   this.setState({internetFlag: false});
     //
@@ -607,25 +658,25 @@ class rnFethcDemo extends React.Component {
   getCountryData = () => {
     return new Promise(resolve => {
       axios
-        .post(
-          'https://us-central1-cloudfunctiondemo-d2104.cloudfunctions.net/app/api/getStateData',
-        )
-        .then(res => {
-          return resolve(res);
-        });
+          .post(
+              'https://us-central1-cloudfunctiondemo-d2104.cloudfunctions.net/app/api/getStateData',
+          )
+          .then(res => {
+            return resolve(res);
+          });
     });
   };
 
   getCountryData1 = () => {
     return new Promise(resolve => {
       axios
-        .post(
-          'https://covidapi123.herokuapp.com/covid/api/getCurrentCasesIndia',
-        )
-        .then(res => {
-          // console.log(res.data)
-          return resolve(res);
-        });
+          .post(
+              'https://covidapi123.herokuapp.com/covid/api/getCurrentCasesIndia',
+          )
+          .then(res => {
+            // console.log(res.data)
+            return resolve(res);
+          });
     });
   };
 
@@ -643,8 +694,8 @@ class rnFethcDemo extends React.Component {
       for (i = 1; i < response.data.statewise.length; i++) {
         for (j = 1; j < response.data.statewise.length - i - 1; j++) {
           if (
-            parseInt(response.data.statewise[j].confirmed) <
-            parseInt(response.data.statewise[j + 1].confirmed)
+              parseInt(response.data.statewise[j].confirmed) <
+              parseInt(response.data.statewise[j + 1].confirmed)
           ) {
             let temp = response.data.statewise[j];
             response.data.statewise[j] = response.data.statewise[j + 1];
@@ -663,11 +714,11 @@ class rnFethcDemo extends React.Component {
   getStateInformationForCase = () => {
     return new Promise(resolve => {
       axios
-        .get('https://api.covid19india.org/state_district_wise.json')
-        .then(res => {
-          // console.log(res.data)
-          return resolve(res);
-        });
+          .get('https://api.covid19india.org/state_district_wise.json')
+          .then(res => {
+            // console.log(res.data)
+            return resolve(res);
+          });
     });
   };
 
@@ -729,740 +780,748 @@ class rnFethcDemo extends React.Component {
       titleForColumn,
     } = style;
     return (
-      <View style={{alignItems: 'center', flex: 1}}>
-        <AppHeader
-          title={'Corona Meter(India)'}
-          onPress={() => this.props.navigation.openDrawer()}
-        />
+        <View  style={{alignItems: 'center', flex: 1}}>
+          <NavigationEvents
+              onDidFocus={() => Alert.alert('Refreshed')}
+          />
+          <AppHeader
+              title={'Corona Meter(India)'}
+              onPress={() => this.props.navigation.openDrawer()}
+          />
 
-        <ScrollView
-          style={{flex: 1}}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={() => this.refreshDemo()}
-            />
-          }>
-          <ImageBackground
-            source={require('../Images/assets/screen_bg.png')}
-            style={{width: null, height: null, flex: 1}}>
-            <View style={{height: screenHeight * 0.4, width: screenWidth}}>
-              <View style={flagView}>
-                <Image
-                  source={indianFlag}
-                  style={{
-                    height: h * 0.1,
-                    width: w * 0.25,
-                    borderRadius: h * 0.01,
-                  }}
+          <ScrollView
+              style={{flex: 1}}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                    refreshing={this.state.refreshing}
+                    onRefresh={() => this.refreshDemo()}
                 />
-                <Text style={logoTitle}>INDIA</Text>
-              </View>
-
-              <View
-                style={{
-                  flex: 1,
-                  marginTop: -h * 0.02,
-                  flexDirection: 'row',
-                  padding: screenHeight * 0.02,
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{flex: 1, backgroundColor: color.lightRed}}>
-                  <View
-                    style={{
-                      flex: 1.5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={require('../Images/assets/covid_1.png')}
+              }>
+            <ImageBackground
+                source={require('../Images/assets/screen_bg.png')}
+                style={{width: null, height: null, flex: 1}}>
+              <View style={{height: screenHeight * 0.4, width: screenWidth}}>
+                <View style={flagView}>
+                  <Image
+                      source={indianFlag}
                       style={{
-                        height: screenHeight * 0.04,
-                        width: screenHeight * 0.04,
+                        height: h * 0.1,
+                        width: w * 0.25,
+                        borderRadius: h * 0.01,
                       }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[valueForColumn, {color: 'red'}]}>
-                      {this.state.CountryCase
-                        ? this.state.CountryCase
-                        : 'Counting..'}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[titleForColumn, {color: 'red'}]}>
-                      CONFIRMED
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(59,59,59,0.25)',
-                    }}>
-                    <Text style={[upperLabel, {color: 'white'}]}>
-                      +{' '}
-                      {this.state.CountryCase
-                        ? parseInt(
-                            this.state.CountryCase.replace(/[^0-9]/g, ''),
-                          ) -
-                          parseInt(
-                            this.state.dailyCases[
-                              this.state.dailyCases.length - 1
-                            ],
-                          )
-                        : 'Counting..'}
-                    </Text>
-                  </View>
+                  />
+                  <Text style={logoTitle}>INDIA</Text>
                 </View>
 
                 <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: color.darkGreen,
-                    marginLeft: screenWidth * 0.05,
-                  }}>
-                  <View
                     style={{
-                      flex: 1.5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      flex: 1,
+                      marginTop: -h * 0.02,
+                      flexDirection: 'row',
+                      padding: screenHeight * 0.02,
+                      justifyContent: 'space-between',
                     }}>
-                    <Image
-                      source={require('../Images/assets/covid_3.png')}
+                  <View style={{flex: 1, backgroundColor: color.lightRed}}>
+                    <View
+                        style={{
+                          flex: 1.5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                      <Image
+                          source={require('../Images/assets/covid_1.png')}
+                          style={{
+                            height: screenHeight * 0.04,
+                            width: screenHeight * 0.04,
+                          }}
+                      />
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[valueForColumn, {color: 'red'}]}>
+                        {this.state.CountryCase
+                            ? this.state.CountryCase
+                            : 'Counting..'}
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[titleForColumn, {color: 'red'}]}>
+                        CONFIRMED
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: 'rgba(59,59,59,0.25)',
+                        }}>
+                      <Text style={[upperLabel, {color: 'white'}]}>
+                        +{' '}
+                        {this.state.newTodayConfirmed>0?this.state.newTodayConfirmed:0}
+                        {/*{this.state.CountryCase*/}
+                        {/*    ? parseInt(*/}
+                        {/*    this.state.CountryCase.replace(/[^0-9]/g, ''),*/}
+                        {/*    ) -*/}
+                        {/*    parseInt(*/}
+                        {/*        this.state.dailyCases[*/}
+                        {/*        this.state.dailyCases.length - 1*/}
+                        {/*            ],*/}
+                        {/*    )*/}
+                        {/*    : 'Counting..'}*/}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
                       style={{
-                        height: screenHeight * 0.04,
-                        width: screenHeight * 0.04,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[valueForColumn, {color: 'green'}]}>
-                      {this.state.dailyRecoverCases.length > 0
-                        ? this.state.dailyRecoverCases
-                        : 'Counting..'}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[titleForColumn, {color: 'green'}]}>
-                      RECOVERED
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(59,59,59,0.25)',
-                    }}>
-                    <Text style={[upperLabel, {color: 'white'}]}>
-                      +{' '}
-                      {this.state.todayRecoveredPatient
-                        ? parseInt(
-                            this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),
-                          ) - parseInt(this.state.todayRecoveredPatient)
-                        : 'Counting'}
-                    </Text>
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: color.lightGray,
-                    marginLeft: screenWidth * 0.05,
-                  }}>
-                  <View
-                    style={{
-                      flex: 1.5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={require('../Images/assets/covid_4.png')}
-                      style={{
-                        height: screenHeight * 0.04,
-                        width: screenHeight * 0.04,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[valueForColumn, {color: 'gray'}]}>
-                      {this.state.CoutryDeath
-                        ? this.state.CoutryDeath
-                        : 'Counting..'}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={[titleForColumn, {color: 'gray'}]}>DEATH</Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(59,59,59,0.25)',
-                    }}>
-                    <Text style={[upperLabel, {color: 'white'}]}>
-                      +{' '}
-                      {this.state.dailyDeathArray && this.state.CoutryDeath
-                        ? parseInt(this.state.CoutryDeath) -
-                          parseInt(
-                            this.state.dailyDeathArray[
-                              this.state.dailyDeathArray.length - 1
-                            ],
-                          )
-                        : 'Counting.'}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/*<View style={{flex:1,flexDirection:'row',padding:screenHeight*0.020,justifyContent:'space-between'}}>*/}
-            {/*  <View style={{flex:1,padding:10,backgroundColor:color.lightRed,borderRadius:screenHeight*0.01,alignItems:'center',justifyContent:'center'}}>*/}
-            {/*    <Image source={require('../Images/assets/covid_1.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
-            {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:'red',textAlign:'center'}}>*/}
-            {/*                {this.state.todayCases*/}
-            {/*                  ? this.state.todayCases*/}
-            {/*                  : 'Counting..'}*/}
-
-            {/*       </Text>*/}
-            {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:'red'}}>CONFIRMED</Text>*/}
-            {/*  </View>*/}
-            {/*  <View style={{flex:1,padding:10,backgroundColor:color.lightGray,borderRadius:screenHeight*0.01,marginLeft:screenHeight*0.010,justifyContent:'center',alignItems:'center'}}>*/}
-            {/*    <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
-            {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:color.gray}}>{this.state.dailyDeathArray && this.state.CoutryDeath ? parseInt(this.state.CoutryDeath) - parseInt(this.state.dailyDeathArray[this.state.dailyDeathArray.length - 1],) : 'Counting.'}</Text>*/}
-            {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:color.gray}}>DECEASED</Text>*/}
-            {/*  </View>*/}
-            {/*  <View style={{flex:1,padding:10,backgroundColor:color.darkGreen,borderRadius:screenHeight*0.01,marginLeft:screenHeight*0.010,alignItems:'center',justifyContent:'center'}}>*/}
-            {/*    <Image source={require('../Images/assets/covid_3.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
-            {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:color.green,textAlign:'center'}}>*/}
-
-            {/*                {this.state.todayRecoveredPatient*/}
-            {/*                  ? parseInt(*/}
-            {/*                      this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),*/}
-            {/*                    ) - parseInt(this.state.todayRecoveredPatient)*/}
-            {/*                  : 'Counting'}*/}
-            {/*    </Text>*/}
-            {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:color.green}}>RECOVERED</Text>*/}
-            {/*  </View>*/}
-
-            {/*</View>*/}
-
-            <View
-              style={{
-                flexDirection: 'row',
-                height: screenHeight * 0.04,
-                width: screenWidth,
-                backgroundColor: 'red',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={indianFlag}
-                style={{
-                  height: screenHeight * 0.03,
-                  width: screenHeight * 0.05,
-                  borderRadius: screenHeight * 0.003,
-                }}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  marginLeft: h * 0.008,
-                  fontSize: normalize(16),
-                }}>
-                INDIA
-              </Text>
-            </View>
-
-            <View
-              style={{
-                height: screenHeight * 0.55,
-                width: screenWidth,
-                alignItems: 'center',
-                alignSelf: 'center',
-                marginTop: -h * 0.02,
-              }}>
-              <View
-                style={{
-                  height: screenHeight * 0.05,
-                  width: screenWidth,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                {/*<Text style={{fontWeight:'bold',fontSize:normalize(20)}}>Progress Day By Day</Text>*/}
-              </View>
-
-              <View
-                style={{height: screenHeight * 0.5, width: screenWidth - 40}}>
-                <View
-                  style={{
-                    height: screenHeight * 0.04,
-                    width: screenWidth - 40,
-                    flexDirection: 'row',
-                  }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: color.purple,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalize(15),
-                        color: 'white',
-                        fontWeight: 'bold',
+                        flex: 1,
+                        backgroundColor: color.darkGreen,
+                        marginLeft: screenWidth * 0.05,
                       }}>
-                      Live Updates
-                    </Text>
+                    <View
+                        style={{
+                          flex: 1.5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                      <Image
+                          source={require('../Images/assets/covid_3.png')}
+                          style={{
+                            height: screenHeight * 0.04,
+                            width: screenHeight * 0.04,
+                          }}
+                      />
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[valueForColumn, {color: 'green'}]}>
+                        {this.state.dailyRecoverCases.length > 0
+                            ? this.state.dailyRecoverCases
+                            : 'Counting..'}
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[titleForColumn, {color: 'green'}]}>
+                        RECOVERED
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: 'rgba(59,59,59,0.25)',
+                        }}>
+                      <Text style={[upperLabel, {color: 'white'}]}>
+                        +{' '}
+                        {/*{console.log("from page"+this.state.newTodayRecovered)}*/}
+                        {this.state.newTodayRecovered>0?this.state.newTodayRecovered:0}
+
+                        {/*{this.state.todayRecoveredPatient*/}
+                        {/*    ? parseInt(*/}
+                        {/*    this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),*/}
+                        {/*) - parseInt(this.state.todayRecoveredPatient)*/}
+                        {/*    : 'Counting'}*/}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: color.lightGray,
+                        marginLeft: screenWidth * 0.05,
+                      }}>
+                    <View
+                        style={{
+                          flex: 1.5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                      <Image
+                          source={require('../Images/assets/covid_4.png')}
+                          style={{
+                            height: screenHeight * 0.04,
+                            width: screenHeight * 0.04,
+                          }}
+                      />
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[valueForColumn, {color: 'gray'}]}>
+                        {this.state.CoutryDeath
+                            ? this.state.CoutryDeath
+                            : 'Counting..'}
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text style={[titleForColumn, {color: 'gray'}]}>DEATH</Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: 'rgba(59,59,59,0.25)',
+                        }}>
+                      <Text style={[upperLabel, {color: 'white'}]}>
+                        +{' '}
+                        {this.state.newTodayDeath>0?this.state.newTodayDeath:'0'}
+                        {/*{this.state.dailyDeathArray && this.state.CoutryDeath*/}
+                        {/*    ? parseInt(this.state.CoutryDeath) -*/}
+                        {/*    parseInt(*/}
+                        {/*        this.state.dailyDeathArray[*/}
+                        {/*        this.state.dailyDeathArray.length - 1*/}
+                        {/*            ],*/}
+                        {/*    )*/}
+                        {/*    : 'Counting.'}*/}
+                      </Text>
+                    </View>
                   </View>
                 </View>
-                <View
-                  style={{
-                    height: screenHeight * 0.4,
-                    width: screenWidth - 40,
-                    backgroundColor: 'white',
-                  }}>
-                  <LiveCoverage />
-                </View>
               </View>
-            </View>
-            <View
-              style={{
-                height: screenHeight * 0.52,
-                width: screenWidth,
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}>
+
+              {/*<View style={{flex:1,flexDirection:'row',padding:screenHeight*0.020,justifyContent:'space-between'}}>*/}
+              {/*  <View style={{flex:1,padding:10,backgroundColor:color.lightRed,borderRadius:screenHeight*0.01,alignItems:'center',justifyContent:'center'}}>*/}
+              {/*    <Image source={require('../Images/assets/covid_1.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
+              {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:'red',textAlign:'center'}}>*/}
+              {/*                {this.state.todayCases*/}
+              {/*                  ? this.state.todayCases*/}
+              {/*                  : 'Counting..'}*/}
+
+              {/*       </Text>*/}
+              {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:'red'}}>CONFIRMED</Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={{flex:1,padding:10,backgroundColor:color.lightGray,borderRadius:screenHeight*0.01,marginLeft:screenHeight*0.010,justifyContent:'center',alignItems:'center'}}>*/}
+              {/*    <Image source={require('../Images/assets/covid_4.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
+              {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:color.gray}}>{this.state.dailyDeathArray && this.state.CoutryDeath ? parseInt(this.state.CoutryDeath) - parseInt(this.state.dailyDeathArray[this.state.dailyDeathArray.length - 1],) : 'Counting.'}</Text>*/}
+              {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:color.gray}}>DECEASED</Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={{flex:1,padding:10,backgroundColor:color.darkGreen,borderRadius:screenHeight*0.01,marginLeft:screenHeight*0.010,alignItems:'center',justifyContent:'center'}}>*/}
+              {/*    <Image source={require('../Images/assets/covid_3.png')} style={{height:screenHeight*.06,width:screenHeight*.06}} />*/}
+              {/*    <Text style={{fontSize:normalize(15),marginTop:screenHeight*0.025,fontWeight:'bold',color:color.green,textAlign:'center'}}>*/}
+
+              {/*                {this.state.todayRecoveredPatient*/}
+              {/*                  ? parseInt(*/}
+              {/*                      this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),*/}
+              {/*                    ) - parseInt(this.state.todayRecoveredPatient)*/}
+              {/*                  : 'Counting'}*/}
+              {/*    </Text>*/}
+              {/*    <Text style={{fontSize:normalize(9),marginTop:screenHeight*0.005,fontWeight:'bold',color:color.green}}>RECOVERED</Text>*/}
+              {/*  </View>*/}
+
+              {/*</View>*/}
+
               <View
-                style={{
-                  height: screenHeight * 0.06,
-                  width: screenWidth,
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                }}>
-                <Text style={{fontWeight: 'bold', fontSize: normalize(20)}}>
-                  State Wise Data
-                </Text>
-                <Text style={{fontWeight: 'bold', fontSize: normalize(10)}}>
-                  Click On State For More Details
+                  style={{
+                    flexDirection: 'row',
+                    height: screenHeight * 0.04,
+                    width: screenWidth,
+                    backgroundColor: 'red',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                <Image
+                    source={indianFlag}
+                    style={{
+                      height: screenHeight * 0.03,
+                      width: screenHeight * 0.05,
+                      borderRadius: screenHeight * 0.003,
+                    }}
+                />
+                <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      marginLeft: h * 0.008,
+                      fontSize: normalize(16),
+                    }}>
+                  INDIA
                 </Text>
               </View>
 
               <View
-                style={{height: screenHeight * 0.45, width: screenWidth - 40}}>
-                <View
                   style={{
-                    height: screenHeight * 0.04,
-                    width: screenWidth - 40,
-                    flexDirection: 'row',
+                    height: screenHeight * 0.55,
+                    width: screenWidth,
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    marginTop: -h * 0.02,
                   }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: color.purple,
-                      padding: screenHeight * 0.005,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalize(15),
-                        color: 'white',
-                        fontWeight: 'bold',
-                      }}>
-                      Location
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: 'red',
-                      padding: screenHeight * 0.005,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalize(15),
-                        color: 'white',
-                        fontWeight: 'bold',
-                        textAlign: 'right',
-                      }}>
-                      Active Cases
-                    </Text>
-                  </View>
-                </View>
                 <View
-                  style={{height: screenHeight * 0.4, width: screenWidth - 40}}>
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    nestedScrollEnabled={true}
-                    style={{flex: 1}}>
-                    {this.state.stateApiResponse.map((data, index) => {
-                      return (
-                        <View>
-                          {data.state !== 'Total' && data.confirmed != 0 && (
-                            <View
-                              key={index}
-                              style={[
-                                stateListView,
-                                {
-                                  backgroundColor:
-                                    index % 2 == 1 ? 'white' : color.lightGray,
-                                },
-                              ]}>
-                              <TouchableOpacity
-                                style={{flex: 1, flexDirection: 'row'}}
-                                onPress={() =>
-                                  this.props.navigation.navigate('StateInfo', {
-                                    data,
-                                  })
-                                }>
-                                <Text style={stateName}>{data.state}</Text>
-                                <Text style={stateCase}>{data.confirmed}</Text>
-                              </TouchableOpacity>
-                            </View>
-                          )}
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
+                    style={{
+                      height: screenHeight * 0.05,
+                      width: screenWidth,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                  {/*<Text style={{fontWeight:'bold',fontSize:normalize(20)}}>Progress Day By Day</Text>*/}
+                </View>
+
+                <View
+                    style={{height: screenHeight * 0.5, width: screenWidth - 40}}>
+                  <View
+                      style={{
+                        height: screenHeight * 0.04,
+                        width: screenWidth - 40,
+                        flexDirection: 'row',
+                      }}>
+                    <View
+                        style={{
+                          flex: 1,
+                          backgroundColor: color.purple,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                      <Text
+                          style={{
+                            fontSize: normalize(15),
+                            color: 'white',
+                            fontWeight: 'bold',
+                          }}>
+                        Live Updates
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                      style={{
+                        height: screenHeight * 0.4,
+                        width: screenWidth - 40,
+                        backgroundColor: 'white',
+                      }}>
+                    <LiveCoverage />
+                  </View>
                 </View>
               </View>
-            </View>
-
-            <View
-              style={{
-                height: screenHeight * 0.52,
-                width: screenWidth,
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}>
               <View
-                style={{
-                  height: screenHeight * 0.06,
-                  width: screenWidth,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{fontWeight: 'bold', fontSize: normalize(20)}}>
-                  Progress Day By Day
-                </Text>
-              </View>
-
-              <View
-                style={{height: screenHeight * 0.45, width: screenWidth - 40}}>
-                <View
                   style={{
-                    height: screenHeight * 0.04,
-                    width: screenWidth - 40,
-                    flexDirection: 'row',
+                    height: screenHeight * 0.52,
+                    width: screenWidth,
+                    alignItems: 'center',
+                    alignSelf: 'center',
                   }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: color.purple,
-                      padding: screenHeight * 0.005,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalize(15),
-                        color: 'white',
-                        fontWeight: 'bold',
-                      }}>
-                      Date
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: 'red',
-                      padding: screenHeight * 0.005,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalize(15),
-                        color: 'white',
-                        fontWeight: 'bold',
-                        textAlign: 'right',
-                      }}>
-                      Cases
-                    </Text>
-                  </View>
-                </View>
                 <View
-                  style={{height: screenHeight * 0.4, width: screenWidth - 40}}>
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    nestedScrollEnabled={true}
-                    style={{flex: 1}}>
-                    {this.state.dayArray
-                      .slice(0)
-                      .reverse()
-                      .map((data, index) => {
+                    style={{
+                      height: screenHeight * 0.06,
+                      width: screenWidth,
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                    }}>
+                  <Text style={{fontWeight: 'bold', fontSize: normalize(20)}}>
+                    State Wise Data
+                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: normalize(10)}}>
+                    Click On State For More Details
+                  </Text>
+                </View>
+
+                <View
+                    style={{height: screenHeight * 0.45, width: screenWidth - 40}}>
+                  <View
+                      style={{
+                        height: screenHeight * 0.04,
+                        width: screenWidth - 40,
+                        flexDirection: 'row',
+                      }}>
+                    <View
+                        style={{
+                          flex: 1,
+                          backgroundColor: color.purple,
+                          padding: screenHeight * 0.005,
+                        }}>
+                      <Text
+                          style={{
+                            fontSize: normalize(15),
+                            color: 'white',
+                            fontWeight: 'bold',
+                          }}>
+                        Location
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          backgroundColor: 'red',
+                          padding: screenHeight * 0.005,
+                        }}>
+                      <Text
+                          style={{
+                            fontSize: normalize(15),
+                            color: 'white',
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                          }}>
+                        Active Cases
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                      style={{height: screenHeight * 0.4, width: screenWidth - 40}}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        nestedScrollEnabled={true}
+                        style={{flex: 1}}>
+                      {this.state.stateApiResponse.map((data, index) => {
                         return (
-                          <View>
-                            <View
-                              key={index}
-                              style={[
-                                progressList,
-                                {
-                                  backgroundColor:
-                                    index % 2 == 1 ? '#ECEDEE' : 'white',
-                                },
-                              ]}>
-                              <Text style={progressDay}>{data}</Text>
-                              <Text style={progresCases}>
-                                {
-                                  this.state.dailyCases[
-                                    this.state.dailyCases.length - 1 - index
-                                  ]
-                                }{' '}
-                              </Text>
+                            <View>
+                              {data.state !== 'Total' && data.confirmed != 0 && (
+                                  <View
+                                      key={index}
+                                      style={[
+                                        stateListView,
+                                        {
+                                          backgroundColor:
+                                              index % 2 == 1 ? 'white' : color.lightGray,
+                                        },
+                                      ]}>
+                                    <TouchableOpacity
+                                        style={{flex: 1, flexDirection: 'row'}}
+                                        onPress={() =>
+                                            this.props.navigation.navigate('StateInfo', {
+                                              data,
+                                            })
+                                        }>
+                                      <Text style={stateName}>{data.state}</Text>
+                                      <Text style={stateCase}>{data.confirmed}</Text>
+                                    </TouchableOpacity>
+                                  </View>
+                              )}
                             </View>
-                          </View>
                         );
                       })}
-                  </ScrollView>
+                    </ScrollView>
+                  </View>
                 </View>
               </View>
-            </View>
 
-            {/*<View style={{height: h * 0.6, width: w}}>*/}
-            {/*  <View style={logoView}>*/}
-            {/*    <Image*/}
-            {/*      source={indianFlag}*/}
-            {/*      style={{height: h * 0.1, width: w * 0.25,borderRadius:h*0.01}}*/}
-            {/*    />*/}
-            {/*    <Text style={logoTitle}>India</Text>*/}
-            {/*  </View>*/}
-            {/*  <View style={headerPartition}>*/}
-            {/*    <Text style={coronaVirusCases}>Coronavirus Cases</Text>*/}
-            {/*    <Text style={totalCases}>*/}
-            {/*      {this.state.CountryCase ? this.state.CountryCase : 'Counting..'}*/}
-            {/*      {parseInt(this.state.todayCases) > 0 && (*/}
-            {/*        <Text*/}
-            {/*          style={{*/}
-            {/*            fontSize: normalize(15),*/}
-            {/*            color: this.state.todayCases == 0 ? 'green' : 'red',*/}
-            {/*          }}>*/}
-            {/*          (Today +*/}
-            {/*          {this.state.todayCases*/}
-            {/*            ? this.state.todayCases*/}
-            {/*            : 'Counting..'}*/}
-            {/*          )*/}
-            {/*        </Text>*/}
-            {/*      )}*/}
-            {/*    </Text>*/}
-            {/*  </View>*/}
-            {/*  <View style={headerPartition}>*/}
-            {/*    <Text style={coronaVirusCases}>Death</Text>*/}
-            {/*    <Text style={[totalCases, {color: 'red'}]}>*/}
-            {/*      {this.state.CoutryDeath ? this.state.CoutryDeath : 'Counting..'}*/}
-            {/*      <Text style={{fontSize: normalize(13)}}>*/}
-            {/*        (*/}
-            {/*        {this.state.dailyDeathArray && this.state.CoutryDeath*/}
-            {/*          ? '+'*/}
-            {/*          : ''}{' '}*/}
-            {/*        <Text>*/}
-            {/*          {this.state.dailyDeathArray && this.state.CoutryDeath*/}
-            {/*            ? parseInt(this.state.CoutryDeath) -*/}
-            {/*              parseInt(*/}
-            {/*                this.state.dailyDeathArray[*/}
-            {/*                  this.state.dailyDeathArray.length - 1*/}
-            {/*                ],*/}
-            {/*              )*/}
-            {/*            : '..'}*/}
-            {/*        </Text>*/}
-            {/*        )*/}
-            {/*      </Text>*/}
-            {/*    </Text>*/}
-            {/*  </View>*/}
-            {/*  <View style={headerPartition}>*/}
-            {/*    <Text style={coronaVirusCases}>Recovered</Text>*/}
-            {/*    <Text style={[totalCases, {color: 'green'}]}>*/}
-            {/*      {this.state.dailyRecoverCases.length > 0*/}
-            {/*        ? this.state.dailyRecoverCases*/}
-            {/*        : 'Counting..'}*/}
-            {/*      <Text style={{fontSize: normalize(15)}}>*/}
-            {/*        <Text>*/}
-            {/*          ({this.state.todayRecoveredPatient ? '+' : ''}{' '}*/}
-            {/*          {this.state.todayRecoveredPatient*/}
-            {/*            ? parseInt(*/}
-            {/*                this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),*/}
-            {/*              ) - parseInt(this.state.todayRecoveredPatient)*/}
-            {/*            : '..'}*/}
-            {/*        </Text>*/}
-            {/*        )*/}
-            {/*      </Text>*/}
-            {/*    </Text>*/}
-            {/*  </View>*/}
-            {/*</View>*/}
-            {/*<View style={liveCoverageView}>*/}
-            {/*  <LiveCoverage />*/}
-            {/*</View>*/}
-            {/*<View style={stateWiseView}>*/}
-            {/*  <View style={{height: h * 0.08}}>*/}
-            {/*    <Text style={stateHeaderTitle}>*/}
-            {/*      State Wise Data*/}
-            {/*      <Text style={{fontSize: normalize(15)}}>*/}
-            {/*        {' '}*/}
-            {/*        (Click on State Name for more detail)*/}
-            {/*      </Text>*/}
-            {/*    </Text>*/}
-            {/*  </View>*/}
-            {/*  <ScrollView*/}
-            {/*    showsVerticalScrollIndicator={false}*/}
-            {/*    nestedScrollEnabled={true}*/}
-            {/*    style={{flex: 1}}>*/}
-            {/*    {this.state.stateApiResponse.map((data, index) => {*/}
-            {/*      return (*/}
-            {/*        <View>*/}
-            {/*          {data.state !== 'Total' && data.confirmed != 0 && (*/}
-            {/*            <View*/}
-            {/*              key={index}*/}
-            {/*              style={[*/}
-            {/*                stateListView,*/}
-            {/*                {*/}
-            {/*                  backgroundColor:*/}
-            {/*                    index % 2 == 1 ? '#ECEDEE' : 'white',*/}
-            {/*                },*/}
-            {/*              ]}>*/}
-            {/*              <TouchableOpacity*/}
-            {/*                style={{flex: 1, flexDirection: 'row'}}*/}
-            {/*                onPress={() =>*/}
-            {/*                  this.props.navigation.navigate('StateInfo', {*/}
-            {/*                    data,*/}
-            {/*                  })*/}
-            {/*                }>*/}
-            {/*                <Text style={stateName}>{data.state}</Text>*/}
-            {/*                <Text style={stateCases}>{data.confirmed}</Text>*/}
-            {/*              </TouchableOpacity>*/}
-            {/*            </View>*/}
-            {/*          )}*/}
-            {/*        </View>*/}
-            {/*      );*/}
-            {/*    })}*/}
-            {/*  </ScrollView>*/}
-            {/*</View>*/}
-            {/*<View style={progressView}>*/}
-            {/*  <Text style={progressTitle}>Progress Day by Day</Text>*/}
-            {/*  <ScrollView*/}
-            {/*    showsVerticalScrollIndicator={false}*/}
-            {/*    nestedScrollEnabled={true}*/}
-            {/*    style={{flex: 1, marginTop: h * 0.015}}>*/}
-            {/*    {this.state.dayArray*/}
-            {/*      .slice(0)*/}
-            {/*      .reverse()*/}
-            {/*      .map((data, index) => {*/}
-            {/*        return (*/}
-            {/*          <View>*/}
-            {/*            <View*/}
-            {/*              key={index}*/}
-            {/*              style={[*/}
-            {/*                progressList,*/}
-            {/*                {*/}
-            {/*                  backgroundColor:*/}
-            {/*                    index % 2 == 1 ? '#ECEDEE' : 'white',*/}
-            {/*                },*/}
-            {/*              ]}>*/}
-            {/*              <Text style={progressDay}>{data}</Text>*/}
-            {/*              <Text style={progresCases}>*/}
-            {/*                {*/}
-            {/*                  this.state.dailyCases[*/}
-            {/*                    this.state.dailyCases.length - 1 - index*/}
-            {/*                  ]*/}
-            {/*                }{' '}*/}
-            {/*                Cases*/}
-            {/*              </Text>*/}
-            {/*            </View>*/}
-            {/*          </View>*/}
-            {/*        );*/}
-            {/*      })}*/}
-            {/*  </ScrollView>*/}
-            {/*</View>*/}
-            {console.log('if', this.state.internetFlag)}
-            {!this.state.internetFlag && (
-              <Modal visible={true} animated={false} transparent={false}>
-                <SafeAreaView style={modalForNetIssue}>
-                  <Image
-                    source={require('../Images/assets/noInternet.png')}
-                    resizeMode={'contain'}
-                    style={{width: w * 0.2, height: w * 0.2}}
-                  />
-                  <Text style={{fontSize: normalize(16), fontWeight: '600'}}>
-                    Opps! Your internet connection appears offline.
-                  </Text>
-                  <TouchableOpacity
+              <View
+                  style={{
+                    height: screenHeight * 0.52,
+                    width: screenWidth,
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                  }}>
+                <View
                     style={{
-                      backgroundColor: 'red',
-                      height: w * 0.15,
-                      width: w * 0.4,
-                      borderRadius: w * 0.02,
+                      height: screenHeight * 0.06,
+                      width: screenWidth,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginTop: 20,
-                    }}
-                    onPress={() => this.checkConnectivity()}>
-                    <Text
+                    }}>
+                  <Text style={{fontWeight: 'bold', fontSize: normalize(20)}}>
+                    Progress Day By Day
+                  </Text>
+                </View>
+
+                <View
+                    style={{height: screenHeight * 0.45, width: screenWidth - 40}}>
+                  <View
                       style={{
-                        fontWeight: 'bold',
-                        fontSize: normalize(16),
-                        color: 'white',
+                        height: screenHeight * 0.04,
+                        width: screenWidth - 40,
+                        flexDirection: 'row',
                       }}>
-                      Try Again
-                    </Text>
-                  </TouchableOpacity>
-                </SafeAreaView>
-              </Modal>
-            )}
-            {this.state.renderFlag && this.state.internetFlag && (
-              <Modal visible={true} animated={false} transparent={true}>
-                <SafeAreaView style={modalForLoader}>
-                  <ActivityIndicator
-                    size="large"
-                    color="black"
-                    animating={this.state.renderFlag}
-                  />
-                </SafeAreaView>
-              </Modal>
-            )}
-          </ImageBackground>
-        </ScrollView>
-      </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          backgroundColor: color.purple,
+                          padding: screenHeight * 0.005,
+                        }}>
+                      <Text
+                          style={{
+                            fontSize: normalize(15),
+                            color: 'white',
+                            fontWeight: 'bold',
+                          }}>
+                        Date
+                      </Text>
+                    </View>
+                    <View
+                        style={{
+                          flex: 1,
+                          backgroundColor: 'red',
+                          padding: screenHeight * 0.005,
+                        }}>
+                      <Text
+                          style={{
+                            fontSize: normalize(15),
+                            color: 'white',
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                          }}>
+                        Cases
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                      style={{height: screenHeight * 0.4, width: screenWidth - 40}}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        nestedScrollEnabled={true}
+                        style={{flex: 1}}>
+                      {this.state.dayArray
+                          .slice(0)
+                          .reverse()
+                          .map((data, index) => {
+                            return (
+                                <View>
+                                  <View
+                                      key={index}
+                                      style={[
+                                        progressList,
+                                        {
+                                          backgroundColor:
+                                              index % 2 == 1 ? '#ECEDEE' : 'white',
+                                        },
+                                      ]}>
+                                    <Text style={progressDay}>{data}</Text>
+                                    <Text style={progresCases}>
+                                      {
+                                        this.state.dailyCases[
+                                        this.state.dailyCases.length - 1 - index
+                                            ]
+                                      }{' '}
+                                    </Text>
+                                  </View>
+                                </View>
+                            );
+                          })}
+                    </ScrollView>
+                  </View>
+                </View>
+              </View>
+
+              {/*<View style={{height: h * 0.6, width: w}}>*/}
+              {/*  <View style={logoView}>*/}
+              {/*    <Image*/}
+              {/*      source={indianFlag}*/}
+              {/*      style={{height: h * 0.1, width: w * 0.25,borderRadius:h*0.01}}*/}
+              {/*    />*/}
+              {/*    <Text style={logoTitle}>India</Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={headerPartition}>*/}
+              {/*    <Text style={coronaVirusCases}>Coronavirus Cases</Text>*/}
+              {/*    <Text style={totalCases}>*/}
+              {/*      {this.state.CountryCase ? this.state.CountryCase : 'Counting..'}*/}
+              {/*      {parseInt(this.state.todayCases) > 0 && (*/}
+              {/*        <Text*/}
+              {/*          style={{*/}
+              {/*            fontSize: normalize(15),*/}
+              {/*            color: this.state.todayCases == 0 ? 'green' : 'red',*/}
+              {/*          }}>*/}
+              {/*          (Today +*/}
+              {/*          {this.state.todayCases*/}
+              {/*            ? this.state.todayCases*/}
+              {/*            : 'Counting..'}*/}
+              {/*          )*/}
+              {/*        </Text>*/}
+              {/*      )}*/}
+              {/*    </Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={headerPartition}>*/}
+              {/*    <Text style={coronaVirusCases}>Death</Text>*/}
+              {/*    <Text style={[totalCases, {color: 'red'}]}>*/}
+              {/*      {this.state.CoutryDeath ? this.state.CoutryDeath : 'Counting..'}*/}
+              {/*      <Text style={{fontSize: normalize(13)}}>*/}
+              {/*        (*/}
+              {/*        {this.state.dailyDeathArray && this.state.CoutryDeath*/}
+              {/*          ? '+'*/}
+              {/*          : ''}{' '}*/}
+              {/*        <Text>*/}
+              {/*          {this.state.dailyDeathArray && this.state.CoutryDeath*/}
+              {/*            ? parseInt(this.state.CoutryDeath) -*/}
+              {/*              parseInt(*/}
+              {/*                this.state.dailyDeathArray[*/}
+              {/*                  this.state.dailyDeathArray.length - 1*/}
+              {/*                ],*/}
+              {/*              )*/}
+              {/*            : '..'}*/}
+              {/*        </Text>*/}
+              {/*        )*/}
+              {/*      </Text>*/}
+              {/*    </Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={headerPartition}>*/}
+              {/*    <Text style={coronaVirusCases}>Recovered</Text>*/}
+              {/*    <Text style={[totalCases, {color: 'green'}]}>*/}
+              {/*      {this.state.dailyRecoverCases.length > 0*/}
+              {/*        ? this.state.dailyRecoverCases*/}
+              {/*        : 'Counting..'}*/}
+              {/*      <Text style={{fontSize: normalize(15)}}>*/}
+              {/*        <Text>*/}
+              {/*          ({this.state.todayRecoveredPatient ? '+' : ''}{' '}*/}
+              {/*          {this.state.todayRecoveredPatient*/}
+              {/*            ? parseInt(*/}
+              {/*                this.state.dailyRecoverCases.replace(/[^0-9]/g, ''),*/}
+              {/*              ) - parseInt(this.state.todayRecoveredPatient)*/}
+              {/*            : '..'}*/}
+              {/*        </Text>*/}
+              {/*        )*/}
+              {/*      </Text>*/}
+              {/*    </Text>*/}
+              {/*  </View>*/}
+              {/*</View>*/}
+              {/*<View style={liveCoverageView}>*/}
+              {/*  <LiveCoverage />*/}
+              {/*</View>*/}
+              {/*<View style={stateWiseView}>*/}
+              {/*  <View style={{height: h * 0.08}}>*/}
+              {/*    <Text style={stateHeaderTitle}>*/}
+              {/*      State Wise Data*/}
+              {/*      <Text style={{fontSize: normalize(15)}}>*/}
+              {/*        {' '}*/}
+              {/*        (Click on State Name for more detail)*/}
+              {/*      </Text>*/}
+              {/*    </Text>*/}
+              {/*  </View>*/}
+              {/*  <ScrollView*/}
+              {/*    showsVerticalScrollIndicator={false}*/}
+              {/*    nestedScrollEnabled={true}*/}
+              {/*    style={{flex: 1}}>*/}
+              {/*    {this.state.stateApiResponse.map((data, index) => {*/}
+              {/*      return (*/}
+              {/*        <View>*/}
+              {/*          {data.state !== 'Total' && data.confirmed != 0 && (*/}
+              {/*            <View*/}
+              {/*              key={index}*/}
+              {/*              style={[*/}
+              {/*                stateListView,*/}
+              {/*                {*/}
+              {/*                  backgroundColor:*/}
+              {/*                    index % 2 == 1 ? '#ECEDEE' : 'white',*/}
+              {/*                },*/}
+              {/*              ]}>*/}
+              {/*              <TouchableOpacity*/}
+              {/*                style={{flex: 1, flexDirection: 'row'}}*/}
+              {/*                onPress={() =>*/}
+              {/*                  this.props.navigation.navigate('StateInfo', {*/}
+              {/*                    data,*/}
+              {/*                  })*/}
+              {/*                }>*/}
+              {/*                <Text style={stateName}>{data.state}</Text>*/}
+              {/*                <Text style={stateCases}>{data.confirmed}</Text>*/}
+              {/*              </TouchableOpacity>*/}
+              {/*            </View>*/}
+              {/*          )}*/}
+              {/*        </View>*/}
+              {/*      );*/}
+              {/*    })}*/}
+              {/*  </ScrollView>*/}
+              {/*</View>*/}
+              {/*<View style={progressView}>*/}
+              {/*  <Text style={progressTitle}>Progress Day by Day</Text>*/}
+              {/*  <ScrollView*/}
+              {/*    showsVerticalScrollIndicator={false}*/}
+              {/*    nestedScrollEnabled={true}*/}
+              {/*    style={{flex: 1, marginTop: h * 0.015}}>*/}
+              {/*    {this.state.dayArray*/}
+              {/*      .slice(0)*/}
+              {/*      .reverse()*/}
+              {/*      .map((data, index) => {*/}
+              {/*        return (*/}
+              {/*          <View>*/}
+              {/*            <View*/}
+              {/*              key={index}*/}
+              {/*              style={[*/}
+              {/*                progressList,*/}
+              {/*                {*/}
+              {/*                  backgroundColor:*/}
+              {/*                    index % 2 == 1 ? '#ECEDEE' : 'white',*/}
+              {/*                },*/}
+              {/*              ]}>*/}
+              {/*              <Text style={progressDay}>{data}</Text>*/}
+              {/*              <Text style={progresCases}>*/}
+              {/*                {*/}
+              {/*                  this.state.dailyCases[*/}
+              {/*                    this.state.dailyCases.length - 1 - index*/}
+              {/*                  ]*/}
+              {/*                }{' '}*/}
+              {/*                Cases*/}
+              {/*              </Text>*/}
+              {/*            </View>*/}
+              {/*          </View>*/}
+              {/*        );*/}
+              {/*      })}*/}
+              {/*  </ScrollView>*/}
+              {/*</View>*/}
+              {console.log('if', this.state.internetFlag)}
+              {!this.state.internetFlag && (
+                  <Modal visible={true} animated={false} transparent={false}>
+                    <SafeAreaView style={modalForNetIssue}>
+                      <Image
+                          source={require('../Actions/noInternet.png')}
+                          resizeMode={'contain'}
+                          style={{width: w * 0.2, height: w * 0.2}}
+                      />
+                      <Text style={{fontSize: normalize(16), fontWeight: '600'}}>
+                        Opps! Your internet connection appears offline.
+                      </Text>
+                      <TouchableOpacity
+                          style={{
+                            backgroundColor: 'red',
+                            height: w * 0.15,
+                            width: w * 0.4,
+                            borderRadius: w * 0.02,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: 20,
+                          }}
+                          onPress={() => this.checkConnectivity()}>
+                        <Text
+                            style={{
+                              fontWeight: 'bold',
+                              fontSize: normalize(16),
+                              color: 'white',
+                            }}>
+                          Try Again
+                        </Text>
+                      </TouchableOpacity>
+                    </SafeAreaView>
+                  </Modal>
+              )}
+              {this.state.renderFlag && this.state.internetFlag && (
+                  <Modal visible={true} animated={false} transparent={true}>
+                    <SafeAreaView style={modalForLoader}>
+                      <ActivityIndicator
+                          size="large"
+                          color="black"
+                          animating={this.state.renderFlag}
+                      />
+                    </SafeAreaView>
+                  </Modal>
+              )}
+            </ImageBackground>
+          </ScrollView>
+        </View>
     );
   }
 }
@@ -1618,6 +1677,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapSatateToProps,
-  mapDispatchToProps(),
+    mapSatateToProps,
+    mapDispatchToProps(),
 )(rnFethcDemo);

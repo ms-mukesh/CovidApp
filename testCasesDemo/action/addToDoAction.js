@@ -1,52 +1,48 @@
-import {Api} from '../api/api'
+import {Api} from '../api/api';
 import {AsyncStorage} from 'react-native';
 
-export const addToDo=(data)=>{
-    return dispatch=>{
-        dispatch({
-            type: 'AddToDo',
-            payload:data
-        })
-    }
-}
-
-export const updateUserName=(data)=>{
-    return dispatch=>{
-
-        dispatch({
-                type: 'updateUser',
-                payload:data
-
-
-            })
-        }
-}
-
-export const DeleteToDo=(data)=>{
-    return dispatch=>{
-        dispatch({
-            type: 'DeleteToDo',
-            payload:data
-        })
-    }
+export const addToDo = data => {
+  return dispatch => {
+    dispatch({
+      type: 'AddToDo',
+      payload: data,
+    });
+  };
 };
-debugger
-export const getUser=()=>{
-    debugger
-    return dispatch=>{
-        return Api('getUserData','','get')
-            .then(res=>{
-                // console.log(res.data);
-                dispatch({
-                    type:'getUser',
-                    payload:res.data
-                })
 
-            })
-            .catch(err=>{
-                console.log(err);
-            });
-    }
+export const updateUserName = data => {
+  return dispatch => {
+    dispatch({
+      type: 'updateUser',
+      payload: data,
+    });
+  };
+};
+
+export const DeleteToDo = data => {
+  return dispatch => {
+    dispatch({
+      type: 'DeleteToDo',
+      payload: data,
+    });
+  };
+};
+debugger;
+export const getUser = () => {
+  debugger;
+  return dispatch => {
+    return Api('getUserData', '', 'get')
+      .then(res => {
+        // console.log(res.data);
+        dispatch({
+          type: 'getUser',
+          payload: res.data,
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 };
 
 //
@@ -113,10 +109,3 @@ export const getUser=()=>{
 //     payload: city,
 //   };
 // };
-
-
-
-
-
-
-

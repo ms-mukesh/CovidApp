@@ -1,34 +1,29 @@
 import React, {Component} from 'react';
-import {SliderBox} from 'react-native-image-slider-box';
-import ImageSlider from 'react-native-image-slider';
 import {
-    LayoutAnimation,
     StyleSheet,
     View,
     Text,
     ScrollView,
-    UIManager,
     TouchableOpacity,
-    Platform,
     SafeAreaView,
-    ActivityIndicator,
     Dimensions,
     Image,
     PixelRatio,
     Modal,
-    FlatList,
 } from 'react-native';
 import axios from 'axios';
 import index from 'rn-fetch-blob';
-import {color} from '../Helper/themeHelper';
+
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
+import {color} from '../Helper/themeHelper';
+
 const scale = w / 375;
+
 const normalize = size => {
     const newSize = size * scale;
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
 };
-const NewsCotent = [];
 export default class worldnewslist extends Component {
     constructor(props) {
         super(props);
@@ -38,35 +33,39 @@ export default class worldnewslist extends Component {
             opacity: 0,
             url: [],
             newsContentArray: [],
-            newsImageArray: [],
             showDetailNewsFlag: false,
-            tempIndex: 0,
-            renderFlag: true,
-            currentImage: '',
             scrollIndex: 0,
         };
     }
     getNews = () => {
         return new Promise(resolve => {
-            axios.get('https://timesofindia.indiatimes.com/india').then(res => {
+            axios.get('https://covidapi123.herokuapp.com/covid/api/getNewsHeadingWorld').then(res => {
                 return resolve(res);
             });
         });
     };
 
-    getTitle = url => {
-        let finalurl = 'https://timesofindia.indiatimes.com/' + url;
-        return new Promise(resolve => {
-            axios.get(finalurl).then(res => {
-                return resolve(res);
-            });
-        });
-    };
+    getNewsTitle = dataArray => {
+        const data = {pageUrl: dataArray};
 
-    getHeadlineDemo = () => {
         return new Promise(resolve => {
             axios
-                .get('https://covidapi123.herokuapp.com/covid/api/getNewsHeading')
+                .post('https://covidapi123.herokuapp.com/covid/api/getNewsTitleWorld', data)
+                .then(res => {
+                    return resolve(res);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+    getNewsContetnt = url => {
+        let finalurl = 'https://covidapi123.herokuapp.com/covid/api/getNewsContentWorld'
+        const data = {pageUrl: url};
+        console.log(url)
+        return new Promise(resolve => {
+            axios
+                .post(finalurl, data)
                 .then(res => {
                     return resolve(res);
                 })
@@ -76,146 +75,24 @@ export default class worldnewslist extends Component {
         });
     };
 
-    getNewsDemo = dataArray => {
-        const data = {pageUrl: dataArray};
-
-        return new Promise(resolve => {
-            axios
-                .post('https://covidapi123.herokuapp.com/covid/api/getNews2', data)
-                .then(res => {
-                    return resolve(res.data);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+    showDetailNews = index => {
+        this.getNewsContetnt(this.state.url[index]).then(res => {
+            this.setState({newsContentArray: []});
+            this.setState({newsContentArray: res.data});
+            this.setState({showDetailNewsFlag: true});
+        }).catch((err)=>{
+            console.log(err)
         });
     };
-
-    getNewContent = newsHeadlineArray => {
-        return new Promise(resolve => {
-            let urldata = 'https://timesofindia.indiatimes.com';
-            let tempNewsArray = [];
-            let tempImageArray = [];
-            let tempUrl = '';
-            let i = 0;
-            newsHeadlineArray.map((data, index) => {
-                tempUrl = urldata + data;
-                if (index < 16) {
-                    axios
-                        .get(tempUrl)
-                        .then(res => {
-                            let str = res.data;
-                            let imgStr = res.data;
-                            let tempImageURl = '';
-                            tempImageURl = imgStr.substring(
-                                imgStr.indexOf('<meta property="og:image"'),
-                                imgStr.indexOf('<meta property="og:image"') + 200,
-                            );
-                            tempImageArray.push(
-                                tempImageURl.substring(
-                                    tempImageURl.indexOf('"', 25) + 1,
-                                    tempImageURl.indexOf('"', 50),
-                                ),
-                            );
-                            let tempNews = str.substring(
-                                str.indexOf('<div class="_3WlLe clearfix  ">'),
-                                str.length,
-                            );
-                            tempNews = tempNews
-                                .substring(0, str.lastIndexOf('<br/>'))
-                                .replace(/(<([^>]+)>)/gi, '');
-                            tempNews = tempNews.split('.');
-                            tempNewsArray.push({news: tempNews, image: tempImageArray[i]});
-                            i = i + 1;
-                            if (index == 15) {
-                                return resolve(tempNewsArray);
-                            }
-                        })
-                        .catch(err => {
-                            console.log('error' + err);
-                        });
-                }
-            });
-        });
-    };
-    showDetailNews = (data, index) => {
-        this.setState({showDetailNewsFlag: true, tempIndex: data});
-        this.setState({currentImage: this.state.newsImageArray[index]});
-    };
-
     componentDidMount(): void {
-        // this.getNews().then((res)=> {
-        //     let str = res.data;
-        //     let news;
-        //     news=str.substring(str.lastIndexOf('<ul class="list5 clearfix" data-msid="-2128936835">'),str.length)
-        //     var count = (news.match(/<a href=/g) || []).length;
-        //
-        //     var regex = /<a href=/gi, result, indices = [];
-        //     while ( (result = regex.exec(news)) ) {
-        //         indices.push(result.index);
-        //     }
-        //     let url=[]
-        //     for(let i=0;i<count;i++)
-        //     {
-        //         let temp=news.substring(indices[i],news.length)
-        //         url.push(temp.substring(9,temp.indexOf('"',10)))
-        //     }
-        //     let tempUrl2=[]
-        //     url.map((data,index)=>{
-        //         if(index<10)
-        //         {
-        //             tempUrl2.push(data)
-        //         }
-        //
-        //     })
-        //     this.getNewContent(url).then((res)=>{
-        //         let tempNewsArray=[]
-        //         let tempImageArray=[]
-        //         res.map((data,index)=>{
-        //             tempNewsArray.push(data.news)
-        //             tempImageArray.push(data.image)
-        //         })
-        //
-        //         this.setState({newsContentArray:tempNewsArray,newsImageArray:tempImageArray})
-        //         this.setState({renderFlag:false})
-        //     }).catch((err)=>{
-        //         console.log("error="+err)
-        //     })
-        //
-        //
-        //
-        //
-        // })
-        let tempDemoUrls = [];
-        let tempNewsArray = [];
-        let tempImageArray = [];
-
-        this.getHeadlineDemo().then(res => {
-            tempDemoUrls = res.data;
-            this.getNewsDemo(tempDemoUrls).then(res => {
-                console.log('dataaasssssss');
-                res.map((data, index) => {
-                    tempNewsArray.push(data.news);
-                    tempImageArray.push(data.image);
-                });
-                this.setState({
-                    renderFlag: false,
-                    newsContentArray: tempNewsArray,
-                    newsImageArray: tempImageArray,
-                });
-            });
-        });
+        this.getNews().then((res)=>{
+            this.setState({url: res.data});
+            this.getNewsTitle(res.data).then((resp)=>{
+                this.setState({newsHeading: resp.data});
+            })
+        })
     }
-
     render() {
-        const {newsHeadinListView, sourceTitle} = style;
-        const Images = [
-            this.state.newsImageArray[0],
-            'https://source.unsplash.com/1024x768/?water',
-            'https://source.unsplash.com/1024x768/?girl',
-            'https://source.unsplash.com/1024x768/?tree', // Network image
-        ];
-
         return (
             <SafeAreaView style={{flex: 1}}>
                 <View style={{flex: 1}}>
@@ -228,9 +105,9 @@ export default class worldnewslist extends Component {
                         }}>
                         <ScrollView
                             showsHorizontalScrollIndicator={false}
-                            showsVerticalScrollIndicator={false}
                             ref={node => (this.scroll = node)}
                             scrollEventThrottle={16}
+                            nestedScrollEnabled={true}
                             pagingEnabled={true}
                             onMomentumScrollEnd={event => {
                                 let i = event.nativeEvent.contentOffset.x / w;
@@ -245,7 +122,7 @@ export default class worldnewslist extends Component {
                                         alignSelf: 'center',
                                         borderRadius: h * 0.01,
                                     }}
-                                    source={{uri: this.state.newsImageArray[0]}}
+                                    source={require('../Images/whoImage1.jpeg')}
                                 />
                             </View>
                             <View style={{flex: 1, width: w, height: null}}>
@@ -256,7 +133,7 @@ export default class worldnewslist extends Component {
                                         alignSelf: 'center',
                                         borderRadius: h * 0.01,
                                     }}
-                                    source={{uri: this.state.newsImageArray[1]}}
+                                    source={require('../Images/whoImage2.jpeg')}
                                 />
                             </View>
                             <View style={{flex: 1, width: w, height: null}}>
@@ -267,7 +144,7 @@ export default class worldnewslist extends Component {
                                         alignSelf: 'center',
                                         borderRadius: h * 0.01,
                                     }}
-                                    source={{uri: this.state.newsImageArray[2]}}
+                                    source={require('../Images/whoImage3.jpeg')}
                                 />
                             </View>
                             <View style={{flex: 1, width: w, height: null}}>
@@ -278,7 +155,7 @@ export default class worldnewslist extends Component {
                                         alignSelf: 'center',
                                         borderRadius: h * 0.01,
                                     }}
-                                    source={{uri: this.state.newsImageArray[3]}}
+                                    source={require('../Images/whoImage4.jpeg')}
                                 />
                             </View>
                             <View style={{flex: 1, width: w, height: null}}>
@@ -289,7 +166,7 @@ export default class worldnewslist extends Component {
                                         alignSelf: 'center',
                                         borderRadius: h * 0.01,
                                     }}
-                                    source={{uri: this.state.newsImageArray[4]}}
+                                    source={require('../Images/whoImage5.jpeg')}
                                 />
                             </View>
                         </ScrollView>
@@ -297,11 +174,9 @@ export default class worldnewslist extends Component {
                             style={{
                                 justifyContent: 'center',
                                 flexDirection: 'row',
-                                // marginTop: h * 0.015,
                                 position: 'absolute',
-                                bottom: h * 0.02,
-                                zIndex: 1,
                                 alignSelf: 'center',
+                                bottom: h * 0.02,
                             }}>
                             <TouchableOpacity
                                 onPress={() => {
@@ -313,7 +188,7 @@ export default class worldnewslist extends Component {
                                         backgroundColor:
                                             this.state.scrollIndex === 0 ? 'red' : 'gray',
                                         width: h * 0.015,
-                                        borderRadius: h * 0.009,
+                                        borderRadius: h * 0.0075,
                                     }}
                                 />
                             </TouchableOpacity>
@@ -327,7 +202,7 @@ export default class worldnewslist extends Component {
                                         backgroundColor:
                                             this.state.scrollIndex === 1 ? 'red' : 'gray',
                                         width: h * 0.015,
-                                        borderRadius: h * 0.009,
+                                        borderRadius: h * 0.0075,
                                         marginLeft: w * 0.03,
                                     }}
                                 />
@@ -342,7 +217,7 @@ export default class worldnewslist extends Component {
                                         backgroundColor:
                                             this.state.scrollIndex === 2 ? 'red' : 'gray',
                                         width: h * 0.015,
-                                        borderRadius: h * 0.009,
+                                        borderRadius: h * 0.0075,
                                         marginLeft: w * 0.03,
                                     }}
                                 />
@@ -357,7 +232,7 @@ export default class worldnewslist extends Component {
                                         backgroundColor:
                                             this.state.scrollIndex === 3 ? 'red' : 'gray',
                                         width: h * 0.015,
-                                        borderRadius: h * 0.009,
+                                        borderRadius: h * 0.0075,
                                         marginLeft: w * 0.03,
                                     }}
                                 />
@@ -372,13 +247,15 @@ export default class worldnewslist extends Component {
                                         backgroundColor:
                                             this.state.scrollIndex === 4 ? 'red' : 'gray',
                                         width: h * 0.015,
-                                        borderRadius: h * 0.009,
+                                        borderRadius: h * 0.0075,
                                         marginLeft: w * 0.03,
                                     }}
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
+
+
 
                     <Text
                         style={{
@@ -387,18 +264,23 @@ export default class worldnewslist extends Component {
                             fontWeight: 'bold',
                             marginTop: h * 0.01,
                             marginLeft: w * 0.02,
-                            marginBottom: h * 0.01,
                         }}>
                         News Headlines
                     </Text>
-                    <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
-                        {// data[0].replace(/[^a-zA-Z0-9 ]/g, "")
-                            this.state.newsContentArray.map((data, index) => {
-                                if (data[0].substring(0, 5) != '') {
+                    <ScrollView style={{flex: 1}}>
+                        <View style={{flex: 1, padding: h * 0.01}}>
+                            <ScrollView
+                                showsVerticalScrollIndicator={false}
+                                style={{flex: 1}}
+                                nestedScrollEnabled={true}>
+
+                                {this.state.newsHeading.map((data, index) => {
+
                                     return (
                                         <TouchableOpacity
-                                            onPress={() => this.showDetailNews(data, index)}>
+                                            onPress={() => this.showDetailNews(index)}>
                                             <View
+                                                key={index}
                                                 style={{
                                                     height: h * 0.15,
                                                     width: w - 40,
@@ -415,7 +297,7 @@ export default class worldnewslist extends Component {
                                                         marginLeft: 5,
                                                     }}>
                                                     <Image
-                                                        source={require('../Images/timesOfIndiaLogo.png')}
+                                                        source={require('../Images/whoLogo.png')}
                                                         style={{
                                                             height: h * 0.05,
                                                             width: h * 0.05,
@@ -443,8 +325,14 @@ export default class worldnewslist extends Component {
                                                     <Text
                                                         numberOfLines={2}
                                                         ellipsizeMode={'tail'}
-                                                        style={{fontSize: normalize(14), textAlign: 'left'}}>
-                                                        {data[0].replace(/[^a-zA-Z0-9 ]/g, '').trim()}
+                                                        style={{
+                                                            fontSize: normalize(14),
+                                                            textAlign: 'left',
+                                                        }}>
+                                                        {/*{data}*/}
+                                                        {/*{console.log(data)}*/}
+
+                                                        {data.replace(/[^a-zA-Z ]/g, '').trim()}
                                                     </Text>
                                                 </View>
                                                 <Text
@@ -460,79 +348,68 @@ export default class worldnewslist extends Component {
                                             </View>
                                         </TouchableOpacity>
                                     );
-                                }
-                            })}
-                        <Text style={sourceTitle}>Source:-TOI(Times of India)</Text>
-                        {this.state.showDetailNewsFlag && (
-                            <Modal visible={true} animated={true} transparent={false}>
-                                <SafeAreaView style={{flex: 1}}>
-                                    <View
-                                        style={{
-                                            flex: 0.04,
-                                            justifyContent: 'center',
-                                            padding: h * 0.005,
-                                        }}>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                this.setState({showDetailNewsFlag: false})
-                                            }>
-                                            <Text
-                                                style={{fontSize: normalize(16), fontWeight: '600'}}>
-                                                Cancel
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <ScrollView style={{flex: 0.96}}>
+                                })}
+                            </ScrollView>
+
+                            <Text
+                                style={{
+                                    textAlign: 'right',
+                                    fontSize: normalize(15),
+                                    padding: h * 0.02,
+                                    fontWeight: '500',
+                                }}>
+                                Source:-WHO(World health organization)
+                            </Text>
+
+                            {this.state.showDetailNewsFlag && (
+                                <Modal visible={true} animated={true} transparent={false}>
+                                    <SafeAreaView style={{flex: 1}}>
                                         <View style={{flex: 1}}>
-                                            <View style={{flex: 1, padding: h * 0.01}}>
-                                                <Image
-                                                    style={{
-                                                        width: w,
-                                                        height: h * 0.4,
-                                                        marginTop: h * 0.02,
-                                                    }}
-                                                    source={{uri: this.state.currentImage}}
-                                                />
-                                                <View style={{marginTop: h * 0.02, padding: h * 0.01}}>
-                                                    {this.state.tempIndex.map((data, index) => {
-                                                        if (index < 6) {
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    justifyContent: 'center',
+                                                    padding: h * 0.005,
+                                                }}>
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        this.setState({showDetailNewsFlag: false})
+                                                    }>
+                                                    <Text style={{fontSize: normalize(16),fontWeight:'600'}}>Cancel</Text>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                            <View
+                                                style={{
+                                                    flex: 9,
+                                                    borderTopWidth: h * 0.001,
+                                                    padding: 10,
+                                                }}>
+                                                <ScrollView style={{flex: 1}}>
+                                                    {this.state.newsContentArray.map((data, index) => {
+                                                        if (index < 7) {
                                                             return (
-                                                                <View style={{marginTop: h * 0.0005}}>
+                                                                <View style={{marginTop: h * 0.0001}}>
                                                                     <Text
                                                                         style={{
                                                                             fontSize: normalize(15),
                                                                             textAlign: 'left',
                                                                         }}>
-                                                                        {data.replace(/[^a-zA-Z0-9 ]/g, '').trim()}
+                                                                        {data}
+
+                                                                        {/*{data.replace(/[^a-zA-Z ]/g, '').trim()}*/}
                                                                     </Text>
                                                                 </View>
                                                             );
                                                         }
                                                     })}
-                                                </View>
+                                                </ScrollView>
                                             </View>
                                         </View>
-                                    </ScrollView>
-                                </SafeAreaView>
-                            </Modal>
-                        )}
-
-                        {this.state.renderFlag && (
-                            <Modal visible={true} animated={false} transparent={true}>
-                                <SafeAreaView
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}>
-                                    <ActivityIndicator
-                                        size="large"
-                                        color="black"
-                                        animating={this.state.renderFlag}
-                                    />
-                                </SafeAreaView>
-                            </Modal>
-                        )}
+                                    </SafeAreaView>
+                                </Modal>
+                            )}
+                        </View>
                     </ScrollView>
                 </View>
             </SafeAreaView>
@@ -540,16 +417,4 @@ export default class worldnewslist extends Component {
     }
 }
 
-const style = StyleSheet.create({
-    newsHeadinListView: {
-        height: h * 0.13,
-        marginTop: h * 0.01,
-        padding: h * 0.015,
-    },
-    sourceTitle: {
-        textAlign: 'right',
-        fontSize: normalize(15),
-        padding: h * 0.02,
-        fontWeight: '500',
-    },
-});
+const styles = StyleSheet.create({});
